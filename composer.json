@@ -1,0 +1,69 @@
+{
+    "name": "usipcom/vtwsclient",
+    "license": "MIT",
+    "description": "Vtiger Web Services API Client for Laravel",
+    "homepage": "https://github.com/usipcom/vtwsclient",
+    "type": "library",
+    "keywords": [
+        "VtWsClient",
+        "webservices",
+        "vtiger",
+        "api client",
+        "vtiger api"
+    ],
+    "authors": [
+        {
+            "name": "Imani Manyara",
+            "email": "hello@imanimanyara.com",
+            "homepage": "https://www.imanimanyara.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Easter Manyara",
+            "email": "hello@eastermukora.com",
+            "homepage": "https://www.eastermukora.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "guzzlehttp/guzzle" : ">=7.4",
+        "adbario/php-dot-notation": "^3.x-dev",
+        "simtabi/pheg": "dev-master"
+    },
+    "require-dev": {
+        "sphpdox/sphpdox"   : "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "USIPCOM\\VtWsClient\\": "src/"
+        },
+        "files": [
+            "helpers/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "USIPCOM\\VtWsClient\\": "tests/"
+        }
+    },
+    "extra":{
+        "laravel":{
+            "providers":[
+                "USIPCOM\\VtWsClient\\Providers\\VtWsClientServiceProvider"
+            ],
+            "aliases": {
+                "VtWsClient": "USIPCOM\\VtWsClient\\Facades\\VtWsClientFacade"
+            }
+        }
+    },
+    "scripts": {
+        "docs": [
+            "@install-pip",
+            "@install-pip-reqs",
+            "cd ./docs && make html"
+        ],
+        "install-pip": "! hash pip &> /dev/null && sudo apt install -qy python-pip",
+        "install-pip-reqs": "pip install -r ./docs/pip-requirements.txt"
+    }
+}
