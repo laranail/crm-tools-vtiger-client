@@ -73,7 +73,7 @@ Use the issues sections for support, bugs or feature related requests.
 Anyone is welcome to contribute to the development of this plugin. There are various ways to do so, please see [CONTRIBUTING](CONTRIBUTING.md).
 
 ## More useful resources
-* [vTiger Webservices Tutorials](https://wiki.vtiger.com/index.php/Webservices_tutorials)
+* [Vtiger Webservices Tutorials](https://wiki.vtiger.com/index.php/Webservices_tutorials)
 
 ## Security
 
