@@ -425,7 +425,7 @@ class Operations
             $id    = $status->value;
         }
 
-       return Laranail::cache(__METHOD__ . $emailOrId, function () use ($id) {
+        return Laranail::cache(__METHOD__ . $emailOrId, function () use ($id) {
             return $this->vtWsClient->query("SELECT * FROM Accounts WHERE account_id = '{$id}';");
         }, $this->session->getCacheTtl());
     }
@@ -461,54 +461,55 @@ class Operations
     public function getAllRelatedAccountEntities(string $emailOrId, array $types = []): array
     {
 
-        // fetch account data
-        $columnType = $this->getAccountId2emailOrViceVersa($emailOrId);
-        $account    = Laranail::cache(__METHOD__ . $emailOrId, function () use ($columnType) {
-            return $this->vtWsClient->query("SELECT * FROM Accounts WHERE {$columnType->key} = '{$columnType->value}'")[0] ?? [];
-        }, $this->session->getCacheTtl());
+        return Laranail::cache(__METHOD__ . $emailOrId, function () use ($emailOrId, $types) {
 
-
-        // fetch all modules related to a given account
-        if (count($types) < 1) {
-            $types = Laranail::cache(__METHOD__ . 'relatedTypes', function () {
-                return $this->relatedTypes('Accounts');
+            // fetch account data
+            $columnType = $this->getAccountId2emailOrViceVersa($emailOrId);
+            $account    = Laranail::cache(__METHOD__ . $emailOrId, function () use ($columnType) {
+                return $this->vtWsClient->query("SELECT * FROM Accounts WHERE {$columnType->key} = '{$columnType->value}'")[0] ?? [];
             }, $this->session->getCacheTtl());
-            $types = $types["types"];
-        }
 
-        // fetch account related modules summary
-        $modules = [];
-        $failed  = [];
-        $errors  = [];
 
-        if (!empty($account) && !empty($types))
-        {
-            // loop through each module and fetch it's data
-            foreach ($types as $moduleName) {
-                $moduleName = ucfirst(strtolower($moduleName));
-                $arrayKey   = strtolower(Helpers::fromCamelCase($moduleName));
+            // fetch all modules related to a given account
+            if (count($types) < 1) {
+                $types = Laranail::cache(__METHOD__ . 'relatedTypes', function () {
+                    return $this->relatedTypes('Accounts');
+                }, $this->session->getCacheTtl());
+                $types = $types["types"];
+            }
 
-                try {
-                    $modules[$arrayKey] = Laranail::cache(__METHOD__ . "-$arrayKey-" . $account["id"], function () use ($account, $moduleName) {
-                        return $this->retrieveRelated($account['id'], $moduleName, $moduleName);
-                    }, $this->session->getCacheTtl());
-                    continue;
-                }catch (VtWsClientException $exception){
-                    $failed[] = $arrayKey;
-                    $errors[] = $exception->getMessage();
+            // fetch account related modules summary
+            $modules = [];
+            $failed  = [];
+
+            if (!empty($account) && !empty($types))
+            {
+                // loop through each module and fetch it's data
+                foreach ($types as $moduleName) {
+                    $moduleName = ucfirst(strtolower($moduleName));
+                    $arrayKey   = strtolower(Helpers::fromCamelCase($moduleName));
+                    if (!empty($arrayKey))  {
+                        try {
+                            $modules[$arrayKey] = $this->retrieveRelated($account['id'], $moduleName, $moduleName);
+                            continue;
+                        }catch (VtWsClientException $exception){
+                            $failed[$arrayKey] = $exception->getMessage();
+                        }
+                    }
                 }
             }
-        }
 
-        return [
-            'account' => [
-                'parent'   => $account,
-                'children' => $this->getAllAccountsRelatedToAccountId($account['id']),
-            ],
-            'modules' => $modules,
-            'failed'  => $failed,
-            'errors'  => $errors,
-        ];
+            return [
+                'account' => [
+                    'parent'   => $account,
+                    'children' => $this->getAllAccountsRelatedToAccountId($account['id']),
+                ],
+                'modules' => ($modules),
+                'failed'  => array_unique($failed),
+            ];
+
+        }, $this->session->getCacheTtl());
+
     }
 
 }
