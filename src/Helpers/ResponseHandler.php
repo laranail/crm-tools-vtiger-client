@@ -61,7 +61,7 @@ class ResponseHandler
      * @param ResponseInterface $response
      * @return stdClass
      */
-    private static function _processResponse(ResponseInterface $response): stdClass
+    private static function _processResponse(ResponseInterface $response): stdClass|null
     {
         if (!empty($response->getBody()->getContents())) {
             $response->getBody()->rewind();
