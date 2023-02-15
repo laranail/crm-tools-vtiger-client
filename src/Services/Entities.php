@@ -19,19 +19,18 @@ use USIPCOM\VtWsClient\VtwsClient;
 class Entities
 {
 
-    private object  $vtWsClient;
-    private Session $session;
+    private VtwsClient $vtwsClient;
+    private Session    $session;
 
     /**
      * Class constructor
-     * @param object $vtwsClient  Parent VtWsClient instance
+     *
+     * @param VtwsClient $vtwsClient Parent VtWsClient instance
+     * @param Session    $session
      */
-    public function __construct(object $vtwsClient, Session $session)
+    public function __construct(VtwsClient $vtwsClient, Session $session)
     {
-        /** @var VtwsClient $vtwsClient */
-        $this->vtWsClient = $vtwsClient;
-
-        /** @var Session $session */
+        $this->vtwsClient = $vtwsClient;
         $this->session    = $session;
     }
 
@@ -45,8 +44,8 @@ class Entities
      */
     public function findOneByID(string $moduleName, string $entityID, array $select = []): ?array
     {
-        $entityID = $this->vtWsClient->modules->getTypedID($moduleName, $entityID);
-        $record   = $this->vtWsClient->invokeOperation('retrieve', ['id' => $entityID], 'GET');
+        $entityID = $this->vtwsClient->modules->getTypedID($moduleName, $entityID);
+        $record   = $this->vtwsClient->invokeOperation('retrieve', ['id' => $entityID], 'GET');
 
         if (!is_array($record)) {
             return null;
@@ -80,7 +79,7 @@ class Entities
     public function getID(string $moduleName, array $params): ?string
     {
         $query = self::getQueryString($moduleName, $params, ['id'], 1);
-        $records = $this->vtWsClient->runQuery($query);
+        $records = $this->vtwsClient->runQuery($query);
         if (false === $records || !is_array($records) || empty($records)) {
             return null;
         }
@@ -126,11 +125,11 @@ class Entities
 
         // Assign record to logged-in user if not specified
         if (!isset($params['assigned_user_id'])) {
-            $currentUser = $this->vtWsClient->getCurrentUser();
+            $currentUser = $this->vtwsClient->getCurrentUser();
             $params['assigned_user_id'] = $currentUser['id'];
         }
 
-        return $this->vtWsClient->invokeOperation('create', [
+        return $this->vtwsClient->invokeOperation('create', [
             'elementType' => $moduleName,
             'element'     => json_encode($params)
         ]);
@@ -158,7 +157,7 @@ class Entities
         }
 
         // Prepend so-called moduleId if needed
-        $entityID = $this->vtWsClient->modules->getTypedID($moduleName, $entityID);
+        $entityID = $this->vtwsClient->modules->getTypedID($moduleName, $entityID);
 
         // Check if the entity exists + retrieve its data so it can be used below
         $entityData = $this->findOneByID($moduleName, $entityID);
@@ -173,7 +172,7 @@ class Entities
             $params
         );
 
-        return $this->vtWsClient->invokeOperation('update', [
+        return $this->vtwsClient->invokeOperation('update', [
             'elementType' => $moduleName,
             'element'     => json_encode($params)
        ]);
@@ -189,9 +188,9 @@ class Entities
     public function deleteOne(string $moduleName, string $entityID): array
     {
         // Prepend so-called moduleId if needed
-        $entityID = $this->vtWsClient->modules->getTypedID($moduleName, $entityID);
+        $entityID = $this->vtwsClient->modules->getTypedID($moduleName, $entityID);
 
-        return $this->vtWsClient->invokeOperation('delete', ['id' => $entityID]);
+        return $this->vtwsClient->invokeOperation('delete', ['id' => $entityID]);
     }
 
     /**
@@ -217,7 +216,7 @@ class Entities
         $query   = self::getQueryString($moduleName, $params, $select, $limit, $offset);
 
         // Run the query
-        $records = $this->vtWsClient->runQuery($query);
+        $records = $this->vtwsClient->runQuery($query);
         if (false === $records || !is_array($records) || empty($records)) {
             return null;
         }
@@ -249,7 +248,7 @@ class Entities
             $requestData['syncType'] = $syncType;
         }
 
-        return $this->vtWsClient->invokeOperation('sync', $requestData, 'GET');
+        return $this->vtwsClient->invokeOperation('sync', $requestData, 'GET');
     }
 
     /**

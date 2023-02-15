@@ -15,19 +15,18 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class Operations
 {
 
-    private object  $vtWsClient;
-    private Session $session;
+    private VtwsClient $vtWsClient;
+    private Session    $session;
 
     /**
      * Class constructor
-     * @param object $vtWsClient  Parent VtWsClient instance
+     *
+     * @param VtwsClient $vtWsClient Parent VtWsClient instance
+     * @param Session    $session
      */
-    public function __construct(object $vtWsClient, Session $session)
+    public function __construct(VtwsClient $vtWsClient, Session $session)
     {
-        /** @var VtwsClient $vtWsClient */
         $this->vtWsClient = $vtWsClient;
-
-        /** @var Session $session */
         $this->session    = $session;
     }
 

@@ -12,21 +12,20 @@ use USIPCOM\VtWsClient\VtWsClient;
 class Fetchers
 {
 
-    private int|bool $cacheTtl = 86400; // 24hrs = 86400
+    private int|bool   $cacheTtl = 86400; // 24hrs = 86400
+
+    private VtwsClient $vtWsClient;
+
+    private Session    $session;
 
     /**
      * Class constructor
-     * @param object $vtWsClient  Parent VtWsClient instance
      */
-    public function __construct(
-        /** @var VtwsClient $vtWsClient */
-        private object   $vtWsClient,
-
-        /** @var Session $session */
-        private Session  $session,
-    )
+    public function __construct(VtwsClient $vtWsClient, Session $session)
     {
-        $this->cacheTtl = Helpers::getCacheTtl();
+        $this->vtWsClient = $vtWsClient;
+        $this->cacheTtl   = Helpers::getCacheTtl();
+        $this->session    = $session;
     }
 
 

@@ -1,33 +1,4 @@
 <?php declare(strict_types=1);
-/**
-* Vtiger Web Services PHP Client Library
-*
-* The MIT License (MIT)
-*
-* Copyright (c) 2015, Zhmayev Yaroslav <salaros@salaros.com>
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*
-* @author    Zhmayev Yaroslav <salaros@salaros.com>
-* @copyright 2015-2016 Zhmayev Yaroslav
-* @license   The MIT License (MIT)
-*/
 
 namespace USIPCOM\VtWsClient\Services;
 
@@ -44,19 +15,18 @@ use USIPCOM\VtWsClient\Services\Session;
 class Modules
 {
 
-    private object  $vtWsClient;
-    private Session $session;
+    private VtwsClient $vtwsClient;
+    private Session    $session;
 
     /**
      * Class constructor
-     * @param object $vtwsClient Parent VtWsClient instance
+     *
+     * @param VtwsClient $vtwsClient Parent VtWsClient instance
+     * @param Session    $session
      */
-    public function __construct(object $vtwsClient, Session $session)
+    public function __construct(VtwsClient $vtwsClient, Session $session)
     {
-        /** @var VtwsClient $vtwsClient */
-        $this->vtWsClient = $vtwsClient;
-
-        /** @var Session $session */
+        $this->vtwsClient = $vtwsClient;
         $this->session    = $session;
     }
 
@@ -68,7 +38,7 @@ class Modules
      */
     public function getAll(): array
     {
-        $result  = $this->vtWsClient->invokeOperation('listtypes', [], 'GET');
+        $result  = $this->vtwsClient->invokeOperation('listtypes', [], 'GET');
 
         $modules = $result['types'];
         $result  = [];
@@ -90,7 +60,7 @@ class Modules
      */
     public function listTypes(): array
     {
-        return $this->vtWsClient->modules->getAll();
+        return $this->vtwsClient->modules->getAll();
     }
 
     /**
@@ -102,7 +72,7 @@ class Modules
      */
     public function getOne(string $moduleName): array
     {
-        return $this->vtWsClient->invokeOperation('describe', [
+        return $this->vtwsClient->invokeOperation('describe', [
             'elementType' => $moduleName,
         ], 'GET');
     }
