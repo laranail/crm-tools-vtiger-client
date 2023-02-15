@@ -14,16 +14,17 @@ class Fetchers
 
     private int|bool $cacheTtl = 86400; // 24hrs = 86400
 
-    /** @var VtwsClient $vtWsClient */
-    private VtWsClient $vtWsClient;
-
-    /** @var Session $session */
-    private Session  $session;
-
     /**
      * Class constructor
+     * @param object $vtWsClient  Parent VtWsClient instance
      */
-    public function __construct()
+    public function __construct(
+        /** @var VtwsClient $vtWsClient */
+        private object   $vtWsClient,
+
+        /** @var Session $session */
+        private Session  $session,
+    )
     {
         $this->cacheTtl = Helpers::getCacheTtl();
     }
