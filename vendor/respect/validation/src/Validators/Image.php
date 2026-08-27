@@ -1,0 +1,52 @@
+<?php
+
+/*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: (c) Respect Project Contributors
+ * SPDX-FileContributor: Alexandre Gomes Gaigalas <alganet@gmail.com>
+ * SPDX-FileContributor: Danilo Benevides <danilobenevides01@gmail.com>
+ * SPDX-FileContributor: Guilherme Siani <guilherme@siani.com.br>
+ * SPDX-FileContributor: Henrique Moody <henriquemoody@gmail.com>
+ */
+
+declare(strict_types=1);
+
+namespace Respect\Validation\Validators;
+
+use Attribute;
+use finfo;
+use Respect\Validation\Message\Template;
+use Respect\Validation\Result;
+use Respect\Validation\Validator;
+use SplFileInfo;
+
+use function is_file;
+use function is_string;
+use function mb_strpos;
+
+use const FILEINFO_MIME_TYPE;
+
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[Template(
+    '{{subject}} must be an accessible existing image file',
+    '{{subject}} must not be an accessible existing image file',
+)]
+final readonly class Image implements Validator
+{
+    public function evaluate(mixed $input): Result
+    {
+        if ($input instanceof SplFileInfo) {
+            return $this->evaluate($input->getPathname());
+        }
+
+        if (!is_string($input) || !is_file($input)) {
+            return Result::failed($input, $this);
+        }
+
+        return Result::of(
+            mb_strpos((string) (new finfo(FILEINFO_MIME_TYPE))->file($input), 'image/') === 0,
+            $input,
+            $this,
+        );
+    }
+}

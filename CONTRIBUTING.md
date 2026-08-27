@@ -2,9 +2,9 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-1. Found a bug? Raise an [issue](https://github.com/usipcom/vtwsclient/issues?direction=desc&labels=bug&page=1&sort=created&state=open) on GitHub.
+1. Found a bug? Raise an [issue](https://github.com/laranail/crm-tools-vtiger-client/issues?direction=desc&labels=bug&page=1&sort=created&state=open) on GitHub.
 2. Send me a Pull Request with your bug fixes and/or new features.
-3. Provide feedback and suggestions on [enhancements](https://github.com/usipcom/vtwsclient/issues?direction=desc&labels=enhancement&page=1&sort=created&state=open).
+3. Provide feedback and suggestions on [enhancements](https://github.com/laranail/crm-tools-vtiger-client/issues?direction=desc&labels=enhancement&page=1&sort=created&state=open).
 
 
 Please read and understand the contribution guide before creating an issue or pull request.

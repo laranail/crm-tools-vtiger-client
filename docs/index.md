@@ -15,7 +15,7 @@ Table of Contents
 ```php
 <?php
 
-use USIPCOM\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient;
 
 // Instantiate the class 
 $client = new VtWsClient();

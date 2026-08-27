@@ -1,6 +1,6 @@
 ![banner](.github/assets/banner.png?raw=true)
 
-VtwsClient
+VtWsClient
 ============
 A [Vtiger](https://www.vtiger.com/) [Web Services API](https://wiki.vtiger.com/index.php/Webservices_tutorials) Client Library for the Laravel framework.
 
@@ -23,13 +23,13 @@ You can support us in a small way, please consider starring and sharing this rep
 
 The recommended way to install **`vtwsclient`** is through [Composer](https://getcomposer.org/download/).
 
-    composer require "usipcom/vtwsclient:*"
+    composer require "laranail/crm-tools-vtiger-client:*"
 
-..or edit your composer.json file manually by appending *usipcom/vtwsclient*:
+..or edit your composer.json file manually by appending *laranail/crm-tools-vtiger-client*:
 
     "require": {
         ...
-        "usipcom/vtwsclient": "*"
+        "laranail/crm-tools-vtiger-client": "*"
     }
 
 ## How to use
@@ -58,7 +58,7 @@ values, instantiate the class as illustrated below, and or refer to some [exampl
 ```php
 <?php
 
-use USIPCOM\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient;
 
 // Instantiate the class 
 $client = new VtWsClient();

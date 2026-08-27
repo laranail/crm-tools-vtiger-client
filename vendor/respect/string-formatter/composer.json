@@ -1,0 +1,55 @@
+{
+    "name": "respect/string-formatter",
+    "type": "library",
+    "description": "A powerful and flexible way of formatting and transforming strings",
+    "require": {
+        "php": "^8.5",
+        "respect/stringifier": "^3.0",
+        "symfony/polyfill-mbstring": "^1.33",
+        "symfony/translation-contracts": "^3.6"
+    },
+    "suggest": {
+        "symfony/translation": "For translation support in TransModifier (^6.0|^7.0)"
+    },
+    "require-dev": {
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^12.5",
+        "respect/coding-standard": "^5.0",
+        "symfony/translation": "^6.0|^7.0"
+    },
+    "license": "ISC",
+    "autoload": {
+        "psr-4": {
+            "Respect\\StringFormatter\\": "src/"
+        },
+        "files": ["aliases.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Respect\\StringFormatter\\": ["docs/contributing/templates/php/src"],
+            "Respect\\StringFormatter\\Test\\": ["tests/", "docs/contributing/templates/php/tests"]
+        }
+    },
+    "authors": [
+        {
+            "name": "Henrique Moody",
+            "email": "henriquemoody@gmail.com"
+        }
+    ],
+    "scripts": {
+        "lint": "phpcs",
+        "test": "phpunit",
+        "analyze": "phpstan",
+        "format": "phpcbf"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    }
+}

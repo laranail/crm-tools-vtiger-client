@@ -1,0 +1,123 @@
+{
+    "name": "laranail/toolkit",
+    "description": "Laranail Toolkit \u2014 a comprehensive, security-first Swiss-army toolkit for Laravel: utilities, traits, middleware, macros, LLM providers, and feature modules for day-to-day Laravel development.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "laranail",
+        "toolkit",
+        "utilities",
+        "traits",
+        "middleware",
+        "macros",
+        "llm"
+    ],
+    "homepage": "https://opensource.simtabi.com/products/laranail/toolkit",
+    "authors": [
+        {
+            "name": "Imani Manyara",
+            "email": "imani@simtabi.com",
+            "homepage": "https://www.imanimanyara.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/laranail/toolkit/issues",
+        "source": "https://github.com/laranail/toolkit",
+        "docs": "https://opensource.simtabi.com/documentation/laranail/toolkit/"
+    },
+    "require": {
+        "php": "^8.4.1",
+        "ext-fileinfo": "*",
+        "ext-mbstring": "*",
+        "bjeavons/zxcvbn-php": "^1.4",
+        "illuminate/cache": "^13.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/filesystem": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/pagination": "^13.0",
+        "illuminate/routing": "^13.0",
+        "illuminate/support": "^13.0",
+        "illuminate/validation": "^13.0",
+        "laranail/console": "^0.1",
+        "openai-php/client": "^0.20.0"
+    },
+    "require-dev": {
+        "infection/infection": "^0.33 || ^0.34",
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.18",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^3.0",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^11.0",
+        "rector/rector": "^2.0",
+        "squizlabs/php_codesniffer": "^3.10 || ^4.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Simtabi\\Laranail\\Toolkit\\": "src/"
+        },
+        "files": [
+            "helpers/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Simtabi\\Laranail\\Toolkit\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "infection/extension-installer": false
+        }
+    },
+    "scripts": {
+        "test": "pest",
+        "test:coverage": "pest --coverage --min=88",
+        "test:mutation": "infection --threads=max --no-progress",
+        "analyse": "phpstan analyse",
+        "format": "pint"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simtabi\\Laranail\\Toolkit\\Providers\\ToolkitServiceProvider"
+            ],
+            "aliases": {
+                "Toolkit": "Simtabi\\Laranail\\Toolkit\\Facades\\Toolkit",
+                "Laranail": "Simtabi\\Laranail\\Toolkit\\Facades\\Laranail",
+                "Avatar": "Simtabi\\Laranail\\Toolkit\\Modules\\Avatar\\Avatar",
+                "Gravatar": "Simtabi\\Laranail\\Toolkit\\Modules\\Gravatar\\Gravatar",
+                "Archiver": "Simtabi\\Laranail\\Toolkit\\Modules\\Archiver\\Archiver",
+                "Atlas": "Simtabi\\Laranail\\Toolkit\\Modules\\Atlas\\Atlas",
+                "Livewire": "Simtabi\\Laranail\\Toolkit\\Modules\\Livewire\\Livewire",
+                "LLM": "Simtabi\\Laranail\\Toolkit\\Modules\\LLM\\LLM"
+            }
+        },
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        }
+    },
+    "suggest": {
+        "laranail/captcha": "Captcha and bot management, relocated out of this package (Turnstile, hCaptcha, every reCAPTCHA version, Friendly Captcha, Arkose, ALTCHA, self-hosted math).",
+        "livewire/livewire": "^3.0 \u2014 for the Livewire component-registration module",
+        "laranail/db-tools": "for UUID/ULID model traits, schema macros, soft-archive, backup/restore and the database CLI (relocated out of this package)",
+        "laranail/package-tools": "for the fluent runtime ConfigManager, relocated out of this package.",
+        "laranail/python": "Bidirectional Python bridge \u2014 HTTP services, local process execution and signed callbacks (supersedes PythonApiService, relocated out of this package)."
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/console"
+        }
+    ]
+}

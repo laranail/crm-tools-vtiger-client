@@ -1,0 +1,8 @@
+preset: symfony
+
+enabled:
+  - long_array_syntax
+
+disabled:
+  - phpdoc_align
+  - yoda_style

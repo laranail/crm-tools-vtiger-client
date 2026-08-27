@@ -1,0 +1,24 @@
+<?php declare(strict_types=1);
+// SPDX-FileCopyrightText: 2007–22 Mozilla Foundation
+// SPDX-License-Identifier: MPL-2.0-no-copyleft-exception
+return [
+    'exceptions' => [],
+    'rules' => [
+        'AC.PK',
+        'BIZ.PK',
+        'COM.PK',
+        'EDU.PK',
+        'FAM.PK',
+        'GKP.PK',
+        'GOB.PK',
+        'GOG.PK',
+        'GOK.PK',
+        'GOP.PK',
+        'GOS.PK',
+        'GOV.PK',
+        'NET.PK',
+        'ORG.PK',
+        'WEB.PK',
+    ],
+    'wildcards' => [],
+];

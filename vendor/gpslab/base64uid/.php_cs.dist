@@ -1,0 +1,33 @@
+<?php
+
+$header = <<<EOF
+GpsLab component.
+
+@author    Peter Gribanov <info@peter-gribanov.ru>
+@copyright Copyright (c) 2011, Peter Gribanov
+@license   http://opensource.org/licenses/MIT
+EOF;
+
+return PhpCsFixer\Config::create()
+    ->setRules(array(
+        '@Symfony' => true,
+        'array_syntax' => array(
+            'syntax' => 'long',
+        ),
+        'header_comment' => array(
+            'commentType' => 'PHPDoc',
+            'header' => $header,
+        ),
+        'class_definition' => array(
+            'multiLineExtendsEachSingleLine' => true,
+        ),
+        'yoda_style' => false,
+        'no_superfluous_phpdoc_tags' => false,
+    ))
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->in(__DIR__.'/src')
+            ->in(__DIR__.'/tests')
+            ->notPath('bootstrap.php')
+    )
+;

@@ -1,0 +1,125 @@
+{
+    "name": "laranail/package-tools",
+    "description": "Runtime base library for building Laravel packages \u2014 fluent Package builder + abstract PackageServiceProvider with attribute-driven discovery, package-tools.doctor, and isolation testing.",
+    "keywords": [
+        "laravel",
+        "package-tools",
+        "laranail",
+        "package-builder",
+        "service-provider",
+        "fluent-api"
+    ],
+    "homepage": "https://opensource.simtabi.com/products/laranail/package-tools",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Simtabi LLC",
+            "email": "opensource@simtabi.com",
+            "homepage": "https://opensource.simtabi.com",
+            "role": "Organization"
+        },
+        {
+            "name": "Imani Manyara",
+            "email": "imani@simtabi.com",
+            "role": "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/laranail/package-tools/issues",
+        "source": "https://github.com/laranail/package-tools",
+        "docs": "https://opensource.simtabi.com/documentation/laranail/package-tools/"
+    },
+    "require": {
+        "php": "^8.4.1 || ^8.5",
+        "illuminate/bus": "^13.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/queue": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/support": "^13.0",
+        "illuminate/filesystem": "^13.0",
+        "illuminate/log": "^13.0",
+        "symfony/process": "^8.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^3.0",
+        "phpunit/phpunit": "^11.0",
+        "spatie/pest-plugin-test-time": "^2.2",
+        "fakerphp/faker": "^1.23",
+        "phpstan/phpstan": "^2.0",
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.18",
+        "rector/rector": "^2.0",
+        "roave/security-advisories": "dev-latest",
+        "laranail/console": "^0.1"
+    },
+    "suggest": {
+        "fakerphp/faker": "Required by the InteractsWithSeedFiles trait's fake() generator (^1.23).",
+        "laranail/console": "Styled, capability-aware seeder output. Without it the same output is written in plain text."
+    },
+    "autoload": {
+        "psr-4": {
+            "Simtabi\\Laranail\\Package\\Tools\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Simtabi\\Laranail\\Package\\Tools\\Tests\\": "tests/"
+        },
+        "classmap": [
+            "tests/fixtures/"
+        ]
+    },
+    "scripts": {
+        "setup": "bash .scripts/init.sh",
+        "test": "vendor/bin/pest --colors=always",
+        "test-coverage": "@test --coverage",
+        "test-dirty": "@test --dirty --compact",
+        "lint": [
+            "@pint",
+            "@phpstan",
+            "@rector",
+            "@sync-check"
+        ],
+        "sync-check": "@php tools/generate-timezone-enum.php --check",
+        "pint": "vendor/bin/pint --test",
+        "pint-fix": "vendor/bin/pint",
+        "phpstan": "vendor/bin/phpstan analyse --no-progress",
+        "rector": "vendor/bin/rector process --dry-run",
+        "rector-fix": "vendor/bin/rector process",
+        "audit": [
+            "@composer-audit"
+        ],
+        "composer-audit": "@composer audit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Simtabi\\Laranail\\Package\\Tools\\Providers\\PackageToolsServiceProvider"
+            ],
+            "aliases": {
+                "PackageSeeder": "Simtabi\\Laranail\\Package\\Tools\\Facades\\PackageSeeder"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/console"
+        }
+    ]
+}

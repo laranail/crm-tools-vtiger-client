@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "../../dist/mjs",
+    "target": "ESNext"
+  },
+  "include": ["src/**/*", "package.json", "tsup.config.ts"]
+}

@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace USIPCOM\VtWsClient\Facades;
+declare(strict_types=1);
+
+namespace Simtabi\Laranail\CrmTools\VtigerClient\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use USIPCOM\VtWsClient\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 
 class VtWsClientFacade extends Facade
 {

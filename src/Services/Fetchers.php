@@ -1,47 +1,45 @@
 <?php
 
-namespace USIPCOM\VtWsClient\Services;
+namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
 use Illuminate\Database\Eloquent\Collection as EC;
 use Illuminate\Support\Collection;
-use Laranail;
+use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
+use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
+use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use Simtabi\Pheg\Toolbox\Arr\Query\QueryEngine;
-use USIPCOM\VtWsClient\Helpers\Helpers;
-use USIPCOM\VtWsClient\VtWsClient;
 
 class Fetchers
 {
+    private int|bool $cacheTtl = 86400; // 24hrs = 86400
 
-    private int|bool   $cacheTtl = 86400; // 24hrs = 86400
+    private VtWsClient $vtWsClient;
 
-    private VtwsClient $vtWsClient;
-
-    private Session    $session;
+    private Session $session;
 
     /**
      * Class constructor
      */
-    public function __construct(VtwsClient $vtWsClient, Session $session)
+    public function __construct(VtWsClient $vtWsClient, Session $session)
     {
         $this->vtWsClient = $vtWsClient;
-        $this->cacheTtl   = Helpers::getCacheTtl();
-        $this->session    = $session;
+        $this->cacheTtl = Helpers::getCacheTtl();
+        $this->session = $session;
     }
-
 
     private function fetchFromCache(QueryEngine|Collection|EC|array $resource, string $cacheName): Collection
     {
-        if (((!$resource instanceof Collection) || (!$resource instanceof EC)) && is_array($resource)) {
+        if (((! $resource instanceof Collection) || (! $resource instanceof EC)) && is_array($resource)) {
             $resource = collect($resource);
-        }elseif ($resource instanceof QueryEngine) {
+        } elseif ($resource instanceof QueryEngine) {
             $resource = $resource->toArray();
         }
 
-        $resource = Laranail::cache(Helpers::getCacheName($cacheName), function () use ($resource) {
+        $resource = Laranail::cache()->remember(Helpers::getCacheName($cacheName), function () use ($resource) {
             return $resource;
         }, $this->cacheTtl);
 
-        if (((!$resource instanceof Collection) || (!$resource instanceof EC)) && is_array($resource)) {
+        if (((! $resource instanceof Collection) || (! $resource instanceof EC)) && is_array($resource)) {
             return collect($resource);
         }
 
@@ -50,11 +48,10 @@ class Fetchers
 
     public function fetchAccounts(bool $usable = false, bool $active = true): Collection
     {
-        $data   = $this->vtWsClient->operations->fetchDeepWithPagination('Accounts');
-        $filter = function ($data)
-        {
-            return $data->filter(function($item){
-                if (!empty($item['accountstatus']) && (strcasecmp($item['accountstatus'], 'active') == 0)) {
+        $data = $this->vtWsClient->operations->fetchDeepWithPagination('Accounts');
+        $filter = function ($data) {
+            return $data->filter(function ($item) {
+                if (! empty($item['accountstatus']) && (strcasecmp($item['accountstatus'], 'active') == 0)) {
                     return $item;
                 }
             });
@@ -64,18 +61,18 @@ class Fetchers
             $data = $data->where('email1', '!=', '');
 
             if ($active) {
-                $key  = 'active_usable_accounts';
+                $key = 'active_usable_accounts';
                 $data = $filter($data);
-            }else{
-                $key  = 'usable_accounts';
+            } else {
+                $key = 'usable_accounts';
             }
 
-        }else{
+        } else {
             if ($active) {
-                $key  = 'active_accounts';
+                $key = 'active_accounts';
                 $data = $filter($data);
-            }else{
-                $key  = 'accounts';
+            } else {
+                $key = 'accounts';
             }
         }
 
@@ -89,7 +86,7 @@ class Fetchers
 
     public function fetchContacts($usable = true): Collection
     {
-        $key  = "Contacts";
+        $key = 'Contacts';
         $data = $this->vtWsClient->operations->fetchDeepWithPagination($key);
         if ($usable) {
             return $this->fetchFromCache($data->where('email', '!=', ''), 'usable_contacts');
@@ -101,24 +98,28 @@ class Fetchers
     public function fetchAssets(): Collection
     {
         $key = 'assets';
+
         return $this->fetchFromCache($this->vtWsClient->operations->fetchDeepWithPagination($key), $key);
     }
 
     public function fetchCases(): Collection
     {
         $key = 'cases';
+
         return $this->fetchFromCache($this->vtWsClient->operations->fetchDeepWithPagination($key), $key);
     }
 
     public function fetchProducts(): Collection
     {
         $key = 'products';
+
         return $this->fetchFromCache($this->vtWsClient->operations->fetchDeepWithPagination($key), $key);
     }
 
     public function fetchProjects(): Collection
     {
         $key = 'projects';
+
         return $this->fetchFromCache($this->vtWsClient->operations->fetchDeepWithPagination($key), $key);
     }
 
@@ -145,23 +146,22 @@ class Fetchers
     public function fetchEntityInfoBy(string $key, string $value, string $module, string $operand = '=')
     {
         $data = match (pheg()->str()->fromCamelCase($module)) {
-            'accounts'   => $this->fetchAccounts(),
-            'assets'     => $this->fetchAssets(),
-            'cases'      => $this->fetchCases(),
-            'contacts'   => $this->fetchContacts(),
-            'products'   => $this->fetchProducts(),
-            'projects'   => $this->fetchProjects(),
-            default      => false,
+            'accounts' => $this->fetchAccounts(),
+            'assets' => $this->fetchAssets(),
+            'cases' => $this->fetchCases(),
+            'contacts' => $this->fetchContacts(),
+            'products' => $this->fetchProducts(),
+            'projects' => $this->fetchProjects(),
+            default => false,
         };
 
         if ($data) {
             $query = $data->where($key, $operand, $value)->first();
-            if (!empty($query)) {
+            if (! empty($query)) {
                 return $query->toArray();
             }
         }
 
         return null;
     }
-
 }

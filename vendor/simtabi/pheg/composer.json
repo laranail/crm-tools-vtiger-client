@@ -1,0 +1,90 @@
+{
+    "name"              : "simtabi/pheg",
+    "license"           : "MIT",
+    "description"       : "A collection of handy and useful utility library for the everyday PHP developer",
+    "type"              : "package",
+    "keywords": [
+        "helpers",
+        "functions"
+    ],
+    "authors": [
+        {
+            "name": "Imani Manyara",
+            "email": "hello@imanimanyara.com",
+            "homepage": "https://www.imanimanyara.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-gd": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "ext-json": "*",
+        "ext-exif": "*",
+        "ext-ctype": "*",
+        "ext-intl": "*",
+        "ext-bcmath": "*",
+        "ext-mbstring": "*",
+        "ext-fileinfo": "*",
+        "symfony/filesystem": "*",
+        "guzzlehttp/guzzle": "*",
+        "myclabs/deep-copy": "*",
+        "eclipxe/xmlschemavalidator": "*",
+        "league/color-extractor": "*",
+        "annexare/countries-list": "*",
+        "adbario/php-dot-notation": "*",
+        "ramsey/uuid": "*",
+        "spomky-labs/otphp": "*",
+        "nesbot/carbon": "*",
+        "cocur/slugify": "*",
+        "vincoweb/easy-php-file-info": "*",
+        "respect/validation": "*",
+        "bjeavons/zxcvbn-php": "*",
+        "giggsey/libphonenumber-for-php": "*",
+        "irfa/php-sn-generator": "*",
+        "html2text/html2text": "*",
+        "phlak/strgen": "*",
+        "gpslab/base64uid": "*",
+        "ezyang/htmlpurifier": "*",
+        "fightbulc/moment": "*",
+        "maxakawizard/json-collection-parser": "*",
+        "simtabi/json-objects": "*",
+        "symfony/uid": "*",
+        "jimmiw/php-time-ago": "*",
+        "sokil/php-isocodes": "*",
+        "masterminds/html5": "*",
+        "spatie/url": "*",
+        "justinrainbow/json-schema": "*",
+        "seld/jsonlint": "*",
+        "rinvex/countries": "*",
+        "soundasleep/html2text": "*"
+    },
+    "require-dev": {
+        "ext-apache": "*",
+        "symfony/translation": "*",
+        "symfony/yaml": "*",
+        "aeon-php/calendar": "*",
+        "thunderer/shortcode": "*",
+        "phpunit/phpunit": "*",
+        "php-coveralls/php-coveralls": "*",
+        "vimeo/psalm": "*"
+    },
+
+    "suggest": {
+        "ext-bcmath": "Compare time units with high precision",
+        "voku/stringy": "A PHP string manipulation library with multibyte support."
+    },
+    "autoload": {
+        "psr-4": {
+            "Simtabi\\Pheg\\": "src/"
+        },
+        "files": [
+            "helpers/classes.php",
+            "helpers/constants.php",
+            "helpers/form_helpers.php"
+        ]
+    },
+    "extra": {
+    }
+}

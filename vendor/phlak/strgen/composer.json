@@ -1,0 +1,28 @@
+{
+    "name": "phlak/strgen",
+    "description": "Generate secure random strings (e.g. passwords / salts)",
+    "keywords": ["string", "generation", "password", "salt"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Kankiewicz",
+            "email": "Chris@ChrisKankiewicz.com",
+            "homepage": "https://www.ChrisKankiewicz.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/PHLAK/StrGen/issues"
+    },
+    "require": {
+        "php" : ">=5.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7",
+        "friendsofphp/php-cs-fixer": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHLAK\\StrGen\\": "src/"
+        }
+    }
+}

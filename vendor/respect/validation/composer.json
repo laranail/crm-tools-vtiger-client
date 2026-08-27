@@ -1,0 +1,99 @@
+{
+    "name": "respect/validation",
+    "description": "The most awesome validation engine ever created for PHP",
+    "keywords": ["respect", "validation", "validator"],
+    "type": "library",
+    "homepage": "http://respect.github.io/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Respect/Validation Contributors",
+            "homepage": "https://github.com/Respect/Validation/graphs/contributors"
+        }
+    ],
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "require": {
+        "php": ">=8.5",
+        "php-di/php-di": "^7.1",
+        "psr/container": "^2.0",
+        "respect/string-formatter": "^1.7",
+        "respect/stringifier": "^3.0",
+        "symfony/polyfill-intl-idn": "^1.33",
+        "symfony/polyfill-mbstring": "^1.33"
+    },
+    "require-dev": {
+        "egulias/email-validator": "^4.0",
+        "giggsey/libphonenumber-for-php-lite": "^8.13 || ^9.0",
+        "mikey179/vfsstream": "^1.6",
+        "nette/php-generator": "^4.1",
+        "pestphp/pest": "^4.6",
+        "phpbench/phpbench": "^1.4",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^12.5",
+        "psr/http-message": "^1.0 || ^2.0",
+        "ramsey/uuid": "^4",
+        "respect/coding-standard": "^5.0",
+        "sebastian/diff": "^7.0",
+        "sokil/php-isocodes": "^4.2.1",
+        "sokil/php-isocodes-db-only": "^4.0",
+        "squizlabs/php_codesniffer": "^4.0",
+        "symfony/console": "^7.4 || ^8.0",
+        "symfony/translation": "^8.0",
+        "symfony/var-exporter": "^6.4 || ^7.0 || ^8.0"
+    },
+    "suggest": {
+        "ext-bcmath": "Arbitrary Precision Mathematics",
+        "ext-fileinfo": "File Information",
+        "ext-mbstring": "Multibyte String Functions",
+        "egulias/email-validator": "Improves the Email rule if available",
+        "giggsey/libphonenumber-for-php-lite": "Enables the phone rule if available",
+        "ramsey/uuid": "Enables the UUID rule if available",
+        "sokil/php-isocodes": "Enable rules that validate ISO codes",
+        "sokil/php-isocodes-db-only": "Enable rules that validate ISO codes"
+    },
+    "autoload": {
+        "psr-4": {
+            "Respect\\Validation\\": "src/"
+        },
+        "files": ["aliases.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Respect\\Dev\\": "src-dev/",
+            "Respect\\Validation\\": "tests/unit/",
+            "Respect\\Validation\\Test\\": "tests/src/"
+        }
+    },
+    "scripts": {
+        "bench-profile": "vendor/bin/phpbench xdebug:profile",
+        "bench": "vendor/bin/phpbench run",
+        "docs-fix": "bin/console lint:docs --fix",
+        "docs-serve": "pip install -qr docs/requirements.txt && mkdocs serve",
+        "docs": "bin/console lint:docs",
+        "pest": "vendor/bin/pest --testsuite=feature --compact",
+        "phpcs": "vendor/bin/phpcs",
+        "phpstan": "vendor/bin/phpstan analyze",
+        "phpunit": "vendor/bin/phpunit --testsuite=unit",
+        "smoke-complete": "bin/console smoke-tests:check-complete",
+        "spdx-lint": "bin/console lint:spdx",
+        "qa": [
+            "@spdx-lint",
+            "@phpcs",
+            "@phpstan",
+            "@phpunit",
+            "@pest",
+            "@docs",
+            "@smoke-complete"
+        ]
+    }
+}

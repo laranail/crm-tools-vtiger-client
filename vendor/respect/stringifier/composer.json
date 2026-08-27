@@ -1,0 +1,63 @@
+{
+    "name": "respect/stringifier",
+    "description": "Converts any value to a string",
+    "keywords": ["respect", "stringifier", "stringify"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Respect/Stringifier Contributors",
+            "homepage": "https://github.com/Respect/Stringifier/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {
+        "malukenho/docheader": "^0.1.7",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^12.5",
+        "respect/coding-standard": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Respect\\Stringifier\\": "src/"
+        },
+        "files": [
+            "stringify.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "": "tests/fixtures/",
+            "Respect\\Stringifier\\Test\\": "tests/src/",
+            "Respect\\Stringifier\\Test\\Unit\\": "tests/unit"
+        },
+        "files": [
+            "tests/integration/lib/helpers.php"
+        ]
+    },
+    "scripts": {
+        "docheader": "vendor/bin/docheader check src/ tests/",
+        "phpcs": "vendor/bin/phpcs",
+        "phpstan": "vendor/bin/phpstan",
+        "phpunit": "vendor/bin/phpunit",
+        "phpunit-integration": "vendor/bin/phpunit --testsuite=integration",
+        "phpunit-unit": "vendor/bin/phpunit --testsuite=unit",
+        "qa": [
+            "@docheader",
+            "@phpcs",
+            "@phpstan",
+            "@phpunit"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

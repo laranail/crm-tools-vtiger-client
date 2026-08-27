@@ -1,0 +1,68 @@
+{
+  "name": "countries-list",
+  "version": "3.4.1",
+  "description": "Continents & countries: ISO 3166-1 alpha-2 code, name, ISO 639-1 languages, capital, ISO 4217 currencies (symbols & numeric codes), native name, phone. JSON, CSV and SQL.",
+  "main": "cjs/index.js",
+  "module": "mjs/index.js",
+  "exports": {
+    "./minimal/*": "./minimal/*",
+    "./currencies": {
+      "require": {
+        "types": "./currencies.d.ts",
+        "default": "./cjs/currencies.js"
+      },
+      "import": {
+        "types": "./currencies.d.ts",
+        "default": "./mjs/currencies.js"
+      }
+    },
+    ".": {
+      "require": {
+        "types": "./index.d.ts",
+        "default": "./cjs/index.js"
+      },
+      "import": {
+        "types": "./index.d.ts",
+        "default": "./mjs/index.js"
+      }
+    }
+  },
+  "sideEffects": [
+    "index.iife.js"
+  ],
+  "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/annexare/Countries.git"
+  },
+  "keywords": [
+    "country",
+    "countries",
+    "continent",
+    "emoji",
+    "languages",
+    "capital",
+    "currency",
+    "data",
+    "csv",
+    "json",
+    "sql",
+    "typings",
+    "currency symbol",
+    "ISO 3166-1",
+    "ISO 639-1",
+    "ISO 4217",
+    "node",
+    "typescript"
+  ],
+  "author": {
+    "name": "Dmytro Klymenko",
+    "email": "d@klmn.me",
+    "url": "https://github.com/dmythro"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/annexare/Countries/issues"
+  },
+  "homepage": "http://annexare.github.io/Countries/"
+}

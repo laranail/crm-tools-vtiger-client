@@ -1,0 +1,32 @@
+<?php declare(strict_types=1);
+// SPDX-FileCopyrightText: 2007–22 Mozilla Foundation
+// SPDX-License-Identifier: MPL-2.0-no-copyleft-exception
+return [
+    'exceptions' => [],
+    'rules' => [
+        'AV.TR',
+        'BBS.TR',
+        'BEL.TR',
+        'BIZ.TR',
+        'COM.TR',
+        'DR.TR',
+        'EDU.TR',
+        'GEN.TR',
+        'GOV.NC.TR',
+        'GOV.TR',
+        'INFO.TR',
+        'K12.TR',
+        'KEP.TR',
+        'MIL.TR',
+        'NAME.TR',
+        'NC.TR',
+        'NET.TR',
+        'ORG.TR',
+        'POL.TR',
+        'TEL.TR',
+        'TSK.TR',
+        'TV.TR',
+        'WEB.TR',
+    ],
+    'wildcards' => [],
+];

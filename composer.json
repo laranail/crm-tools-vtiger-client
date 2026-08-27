@@ -1,8 +1,8 @@
 {
-    "name": "usipcom/vtwsclient",
+    "name": "laranail/crm-tools-vtiger-client",
     "license": "MIT",
-    "description": "Vtiger Web Services API Client for Laravel",
-    "homepage": "https://github.com/usipcom/vtwsclient",
+    "description": "A Vtiger web-services client for Laravel.",
+    "homepage": "https://opensource.simtabi.com/products/laranail/crm-tools-vtiger-client",
     "type": "library",
     "keywords": [
         "VtWsClient",
@@ -14,29 +14,26 @@
     "authors": [
         {
             "name": "Imani Manyara",
-            "email": "hello@imanimanyara.com",
-            "homepage": "https://www.imanimanyara.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Easter Manyara",
-            "email": "hello@eastermukora.com",
-            "homepage": "https://www.eastermukora.com",
-            "role": "Developer"
+            "email": "imani@simtabi.com"
         }
     ],
     "require": {
-        "php": ">=8.0",
-        "guzzlehttp/guzzle" : ">=7.4",
-        "adbario/php-dot-notation": "^3.x-dev",
+        "php": "^8.4.1 || ^8.5",
+        "adbario/php-dot-notation": "^3.3",
+        "guzzlehttp/guzzle": "^7.8",
+        "illuminate/support": "^13.0",
+        "laranail/package-tools": "^0.1",
+        "laranail/toolkit": "^0.1",
         "simtabi/pheg": "dev-master"
     },
     "require-dev": {
-        "sphpdox/sphpdox"   : "dev-master"
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^11.1",
+        "pestphp/pest": "^4.6"
     },
     "autoload": {
         "psr-4": {
-            "USIPCOM\\VtWsClient\\": "src/"
+            "Simtabi\\Laranail\\CrmTools\\VtigerClient\\": "src/"
         },
         "files": [
             "helpers/helpers.php"
@@ -44,17 +41,20 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "USIPCOM\\VtWsClient\\": "tests/"
+            "Simtabi\\Laranail\\CrmTools\\VtigerClient\\Tests\\": "tests/"
         }
     },
-    "extra":{
-        "laravel":{
-            "providers":[
-                "USIPCOM\\VtWsClient\\Providers\\VtWsClientServiceProvider"
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simtabi\\Laranail\\CrmTools\\VtigerClient\\Providers\\VtWsClientServiceProvider"
             ],
             "aliases": {
-                "VtWsClient": "USIPCOM\\VtWsClient\\Facades\\VtWsClientFacade"
+                "VtWsClient": "Simtabi\\Laranail\\CrmTools\\VtigerClient\\Facades\\VtWsClientFacade"
             }
+        },
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
         }
     },
     "scripts": {
@@ -65,5 +65,40 @@
         ],
         "install-pip": "! hash pip &> /dev/null && sudo apt install -qy python-pip",
         "install-pip-reqs": "pip install -r ./docs/pip-requirements.txt"
-    }
+    },
+    "support": {
+        "issues": "https://github.com/laranail/crm-tools-vtiger-client/issues",
+        "source": "https://github.com/laranail/crm-tools-vtiger-client",
+        "docs": "https://opensource.simtabi.com/documentation/laranail/crm-tools-vtiger-client/"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/package-tools"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/simtabi/pheg"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/simtabi/json-objects"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/toolkit"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/laranail/console"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
