@@ -17,3 +17,6 @@
 *.log
 /.fleet
 /.idea
+/vendor
+/composer.lock
+/.phpunit.result.cache
