@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
-use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
-use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use Simtabi\Pheg\Toolbox\Arr\Query\ArrayQuery;
 use Simtabi\Pheg\Toolbox\Arr\Query\QueryEngine;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
+use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 class Operations
 {
@@ -21,7 +23,7 @@ class Operations
     /**
      * Class constructor
      *
-     * @param  VtWsClient  $vtWsClient  Parent VtWsClient instance
+     * @param VtWsClient $vtWsClient Parent VtWsClient instance
      */
     public function __construct(VtWsClient $vtWsClient, Session $session)
     {
@@ -56,11 +58,11 @@ class Operations
         if (preg_match('/(\s[o][f][f][s][e][t]) (\d*)/', $queryString, $matchOffset) && preg_match('/(\s[l][i][m][i][t]) (\d*)/', $queryString, $matchLimit)) {
             $queryString = preg_replace('/(\s[o][f][f][s][e][t]) (\d*)/', '', $queryString);
             $queryString = preg_replace('/(\s[l][i][m][i][t]) (\d*)/', '', $queryString);
-            $queryString = $queryString.' limit '.$matchOffset[2].','.$matchLimit[2];
+            $queryString = $queryString . ' limit ' . $matchOffset[2] . ',' . $matchLimit[2];
         }
 
         // Remove the backticks and add semicolon
-        $queryString = str_replace('`', '', $queryString).';';
+        $queryString = str_replace('`', '', $queryString) . ';';
 
         return $this->vtWsClient->query($queryString);
     }
@@ -77,16 +79,16 @@ class Operations
         // Update columns into the proper format
         $columnsText = '';
         foreach ($columns as $column) {
-            $columnsText .= '"'.$column.'",';
+            $columnsText .= '"' . $column . '",';
         }
 
         // Trim the last comma from the string
         $columnsText = substr($columnsText, 0, (strlen($columnsText) - 1));
 
         return $this->vtWsClient->invokeOperation('lookup', [
-            'type' => $dataType,
-            'value' => $value,
-            'searchIn' => '{"'.$module.'":['.$columnsText.']}',
+            'type'     => $dataType,
+            'value'    => $value,
+            'searchIn' => '{"' . $module . '":[' . $columnsText . ']}',
         ], 'GET');
     }
 
@@ -122,8 +124,8 @@ class Operations
     {
         return $this->vtWsClient->invokeOperation('retrieve_related', [
             'relatedLabel' => $targetLabel,
-            'relatedType' => $targetModule,
-            'id' => $id,
+            'relatedType'  => $targetModule,
+            'id'           => $id,
         ], 'GET');
     }
 
@@ -246,11 +248,11 @@ class Operations
     /**
      * Builds and retrieves multiple records using module name and a set of supplied constraints
      *
-     * @param  string  $moduleName  The name of the module / entity type
-     * @param  array  $conditions  Data used to find matching entries
-     * @param  array  $select  The list of fields to select (defaults to SQL-like '*' - all the fields)
-     * @param  int  $limit  Limit the list of entries to N records (acts like LIMIT in SQL)
-     * @param  int  $offset  Integer values to specify the offset of the query
+     * @param string $moduleName The name of the module / entity type
+     * @param array $conditions Data used to find matching entries
+     * @param array $select The list of fields to select (defaults to SQL-like '*' - all the fields)
+     * @param int $limit Limit the list of entries to N records (acts like LIMIT in SQL)
+     * @param int $offset Integer values to specify the offset of the query
      *
      * @throws VtWsClientException
      */
@@ -295,7 +297,7 @@ class Operations
 
         try {
 
-            $data = Laranail::cache()->remember(__METHOD__.$moduleName, function () use ($moduleName, $conditions, $select, $limit, $offset, $makeQueryString, $paginateQuery) {
+            $data = Laranail::cache()->remember(__METHOD__ . $moduleName, function () use ($moduleName, $conditions, $select, $limit, $offset, $makeQueryString, $paginateQuery) {
                 $counter = 0;
                 $data = [];
 
@@ -341,7 +343,7 @@ class Operations
     {
         $column = Helpers::isValidEmail($emailOrId) ? 'email1' : 'id';
 
-        return Laranail::cache()->remember(__METHOD__.$emailOrId, function () use ($column, $emailOrId) {
+        return Laranail::cache()->remember(__METHOD__ . $emailOrId, function () use ($column, $emailOrId) {
             return $this->vtWsClient->query("SELECT * FROM Accounts WHERE {$column} = '{$emailOrId}'")[0] ?? [];
         }, $this->session->getCacheTtl());
     }
@@ -358,8 +360,8 @@ class Operations
         $key = Helpers::isValidEmail($emailOrId) ? 'id' : 'email1';
 
         return (object) [
-            'key' => $key,
-            'value' => $value,
+            'key'      => $key,
+            'value'    => $value,
             'is_email' => Helpers::isValidEmail($value),
         ];
     }
@@ -380,7 +382,7 @@ class Operations
             $id = $status->value;
         }
 
-        return Laranail::cache()->remember(__METHOD__.$emailOrId, function () use ($id) {
+        return Laranail::cache()->remember(__METHOD__ . $emailOrId, function () use ($id) {
             return $this->vtWsClient->query("SELECT * FROM Accounts WHERE account_id = '{$id}';");
         }, $this->session->getCacheTtl());
     }
@@ -388,7 +390,7 @@ class Operations
     /**
      * Fetches all account contacts
      *
-     * @param  bool  $usable  optional to filter if we want only accounts with a not empty email column
+     * @param bool $usable optional to filter if we want only accounts with a not empty email column
      *
      * @throws VtWsClientException
      */
@@ -413,17 +415,17 @@ class Operations
     public function getAllRelatedAccountEntities(string $emailOrId, array $types = []): array
     {
 
-        return Laranail::cache()->remember(__METHOD__.$emailOrId, function () use ($emailOrId, $types) {
+        return Laranail::cache()->remember(__METHOD__ . $emailOrId, function () use ($emailOrId, $types) {
 
             // fetch account data
             $columnType = $this->getAccountId2emailOrViceVersa($emailOrId);
-            $account = Laranail::cache()->remember(__METHOD__.$emailOrId, function () use ($columnType) {
+            $account = Laranail::cache()->remember(__METHOD__ . $emailOrId, function () use ($columnType) {
                 return $this->vtWsClient->query("SELECT * FROM Accounts WHERE {$columnType->key} = '{$columnType->value}'")[0] ?? [];
             }, $this->session->getCacheTtl());
 
             // fetch all modules related to a given account
             if (count($types) < 1) {
-                $types = Laranail::cache()->remember(__METHOD__.'relatedTypes', function () {
+                $types = Laranail::cache()->remember(__METHOD__ . 'relatedTypes', function () {
                     return $this->relatedTypes('Accounts');
                 }, $this->session->getCacheTtl());
                 $types = $types['types'];
@@ -452,11 +454,11 @@ class Operations
 
             return [
                 'account' => [
-                    'parent' => $account,
+                    'parent'   => $account,
                     'children' => $this->getAllAccountsRelatedToAccountId($account['id']),
                 ],
                 'modules' => ($modules),
-                'failed' => array_unique($failed),
+                'failed'  => array_unique($failed),
             ];
 
         }, $this->session->getCacheTtl());

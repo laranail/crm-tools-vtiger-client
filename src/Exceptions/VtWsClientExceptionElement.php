@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Exceptions;
 
 class VtWsClientExceptionElement

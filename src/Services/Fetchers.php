@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
-use Illuminate\Database\Eloquent\Collection as EC;
 use Illuminate\Support\Collection;
-use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
-use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use Simtabi\Pheg\Toolbox\Arr\Query\QueryEngine;
+use Illuminate\Database\Eloquent\Collection as EC;
+use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 
 class Fetchers
 {
@@ -25,25 +27,6 @@ class Fetchers
         $this->vtWsClient = $vtWsClient;
         $this->cacheTtl = Helpers::getCacheTtl();
         $this->session = $session;
-    }
-
-    private function fetchFromCache(QueryEngine|Collection|EC|array $resource, string $cacheName): Collection
-    {
-        if (((! $resource instanceof Collection) || (! $resource instanceof EC)) && is_array($resource)) {
-            $resource = collect($resource);
-        } elseif ($resource instanceof QueryEngine) {
-            $resource = $resource->toArray();
-        }
-
-        $resource = Laranail::cache()->remember(Helpers::getCacheName($cacheName), function () use ($resource) {
-            return $resource;
-        }, $this->cacheTtl);
-
-        if (((! $resource instanceof Collection) || (! $resource instanceof EC)) && is_array($resource)) {
-            return collect($resource);
-        }
-
-        return $resource;
     }
 
     public function fetchAccounts(bool $usable = false, bool $active = true): Collection
@@ -147,12 +130,12 @@ class Fetchers
     {
         $data = match (pheg()->str()->fromCamelCase($module)) {
             'accounts' => $this->fetchAccounts(),
-            'assets' => $this->fetchAssets(),
-            'cases' => $this->fetchCases(),
+            'assets'   => $this->fetchAssets(),
+            'cases'    => $this->fetchCases(),
             'contacts' => $this->fetchContacts(),
             'products' => $this->fetchProducts(),
             'projects' => $this->fetchProjects(),
-            default => false,
+            default    => false,
         };
 
         if ($data) {
@@ -163,5 +146,24 @@ class Fetchers
         }
 
         return null;
+    }
+
+    private function fetchFromCache(QueryEngine|Collection|EC|array $resource, string $cacheName): Collection
+    {
+        if (((! $resource instanceof Collection) || (! $resource instanceof EC)) && is_array($resource)) {
+            $resource = collect($resource);
+        } elseif ($resource instanceof QueryEngine) {
+            $resource = $resource->toArray();
+        }
+
+        $resource = Laranail::cache()->remember(Helpers::getCacheName($cacheName), function () use ($resource) {
+            return $resource;
+        }, $this->cacheTtl);
+
+        if (((! $resource instanceof Collection) || (! $resource instanceof EC)) && is_array($resource)) {
+            return collect($resource);
+        }
+
+        return $resource;
     }
 }

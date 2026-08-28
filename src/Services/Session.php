@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
 use GuzzleHttp\Client;
+use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use GuzzleHttp\Exception\InvalidArgumentException;
-use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\ResponseHandler;
-use Simtabi\Laranail\Toolkit\Facades\Laranail;
+use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 class Session
 {
@@ -69,6 +71,41 @@ class Session
 
     // store all encountered errors
     private array $errors = [];
+
+    /**
+     * Class constructor
+     *
+     * @throws VtWsClientException
+     */
+    public function __construct()
+    {
+        $this->baseUri = Helpers::fixUriProtocol(Helpers::getBaseUri());
+        $this->httpErrors = Helpers::isHttpErrors();
+        $this->verify = Helpers::isVerify();
+        $this->requestTimeout = Helpers::getRequestTimeout();
+        $this->maximumTries = Helpers::getMaximumTries();
+        $this->persistConnection = Helpers::isPersistConnection();
+        $this->cacheTtl = Helpers::getCacheTtl();
+        $this->throwErrors = Helpers::isThrowErrors();
+        $this->loginWithAccessKey = Helpers::isLoginWithAccessKey();
+
+        $this->userName = Helpers::getUsername();
+        $this->accessKey = Helpers::getAccessKey();
+        $this->password = Helpers::getPassword();
+
+        try {
+            // Initialize WebServices API requests
+            $this->httpClient = new Client([
+                'base_uri'    => $this->baseUri,
+                'http_errors' => $this->httpErrors,
+                'verify'      => $this->verify,
+
+            ]);
+        } catch (InvalidArgumentException $e) {
+            throw VtWsClientException::init(VtWsClientException::getVtWsExceptionErrors(), 7, $e->getMessage());
+        }
+
+    }
 
     public function getRequestTimeout(): int
     {
@@ -201,41 +238,6 @@ class Session
     }
 
     /**
-     * Class constructor
-     *
-     * @throws VtWsClientException
-     */
-    public function __construct()
-    {
-        $this->baseUri = Helpers::fixUriProtocol(Helpers::getBaseUri());
-        $this->httpErrors = Helpers::isHttpErrors();
-        $this->verify = Helpers::isVerify();
-        $this->requestTimeout = Helpers::getRequestTimeout();
-        $this->maximumTries = Helpers::getMaximumTries();
-        $this->persistConnection = Helpers::isPersistConnection();
-        $this->cacheTtl = Helpers::getCacheTtl();
-        $this->throwErrors = Helpers::isThrowErrors();
-        $this->loginWithAccessKey = Helpers::isLoginWithAccessKey();
-
-        $this->userName = Helpers::getUsername();
-        $this->accessKey = Helpers::getAccessKey();
-        $this->password = Helpers::getPassword();
-
-        try {
-            // Initialize WebServices API requests
-            $this->httpClient = new Client([
-                'base_uri' => $this->baseUri,
-                'http_errors' => $this->httpErrors,
-                'verify' => $this->verify,
-
-            ]);
-        } catch (InvalidArgumentException $e) {
-            throw VtWsClientException::init(VtWsClientException::getVtWsExceptionErrors(), 7, $e->getMessage());
-        }
-
-    }
-
-    /**
      * Gets vTiger version, retrieved on successful login
      *
      * @return string vTiger version, retrieved on successful login
@@ -264,8 +266,8 @@ class Session
     {
         return [
             'accessKey' => $this->accessKey,
-            'userName' => $this->userName,
-            'id' => $this->userID,
+            'userName'  => $this->userName,
+            'id'        => $this->userID,
         ];
     }
 
@@ -288,51 +290,6 @@ class Session
         }
 
         return null;
-    }
-
-    /**
-     * Logout from the VTiger API
-     *
-     * @throws VtWsClientException
-     */
-    protected function logout(?string $sessionId = null): bool|array
-    {
-        if ($this->persistConnection) {
-            return true;
-        }
-
-        try {
-
-            // get session id
-            if (empty($sessionId)) {
-                $sessionId = isset($this->session->getSession()->auth->sessionId) ? $this->session->getSession()->auth->sessionId : null;
-            }
-
-            // if we still don't have a valid session id
-            if (empty($sessionId)) {
-                throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(14)->getMessage(), 14);
-            }
-
-            // send a request to close current connection
-            $response = $this->sendHttpRequest([
-                'sessionName' => $sessionId,
-                'operation' => 'logout',
-            ], 'POST');
-
-            // if signout was successful
-            if (isset($response['message']) && ! empty($response['message']) && ($response['message'] === 'successful')) {
-                return true;
-            }
-
-        } catch (VtWsClientException $exception) {
-            if ($this->throwErrors) {
-                throw new VtWsClientException($exception->getMessage(), $exception->getCode());
-            } else {
-                $this->setErrors($exception->getMessage());
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -360,10 +317,10 @@ class Session
         $this->session = Laranail::cache()->remember(Helpers::getCacheName('session'), function () {
             return pheg()->transfigure()->toObject([
                 'expireTime' => $this->serviceExpireTime,
-                'token' => $this->serviceToken,
-                'auth' => [
+                'token'      => $this->serviceToken,
+                'auth'       => [
                     'sessionId' => $this->sessionName,
-                    'userId' => $this->userID,
+                    'userId'    => $this->userID,
                 ],
             ]);
         }, $this->cacheTtl);
@@ -372,136 +329,11 @@ class Session
     }
 
     /**
-     * Login to the server using username and VTiger access key token
-     *
-     * @param  string|null  $username  VTiger user name
-     * @param  string|null  $accessKey  VTiger access key token (visible on user profile/settings page)
-     * @return bool Returns true if login operation has been successful
-     *
-     * @throws VtWsClientException
-     */
-    private function loginWithAccessKey(?string $username, ?string $accessKey): bool
-    {
-
-        if (empty($username)) {
-            throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(15)->getMessage(), 15);
-        }
-
-        if (empty($accessKey)) {
-            throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(16)->getMessage(), 16);
-        }
-
-        // Do the challenge before logging in
-        if ($this->passChallenge($username) === false) {
-            return false;
-        }
-
-        $result = $this->sendHttpRequest([
-            'operation' => 'login',
-            'username' => $username,
-            'accessKey' => md5($this->serviceToken.$accessKey),
-        ]);
-
-        if (! is_array($result) || empty($result)) {
-            return false;
-        }
-
-        // Backup logged-in user credentials
-        $this->userName = $username;
-        $this->accessKey = $accessKey;
-
-        // Session data
-        $this->sessionName = $result['sessionName'];
-        $this->userID = $result['userId'];
-
-        // Vtiger CRM and WebServices API version
-        $this->vtigerApiVersion = $result['version'];
-        $this->vtigerVersion = $result['vtigerVersion'];
-
-        return true;
-    }
-
-    /**
-     * Allows you to login using username and password instead of access key (works on some VTige forks)
-     *
-     * @param  string|null  $username  VTiger user name
-     * @param  string|null  $password  VTiger password (used to access CRM using the standard login page)
-     * @param  string|null  $accessKey  This parameter will be filled with user's VTiger access key
-     * @return bool Returns true if login operation has been successful
-     *
-     * @throws VtWsClientException
-     */
-    private function loginWithPassword(?string $username, ?string $password, ?string &$accessKey = null): bool
-    {
-        try {
-
-            if (empty($username)) {
-                throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(15)->getMessage(), 15);
-            }
-
-            if (empty($password)) {
-                throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(17)->getMessage(), 17);
-            }
-
-            // Do the challenge before logging in
-            if ($this->passChallenge($username) === false) {
-                return false;
-            }
-
-            $result = $this->sendHttpRequest([
-                'operation' => 'login_pwd',
-                'username' => $username,
-                'password' => $password,
-            ]);
-
-            if (! is_array($result) || empty($result)) {
-                return false;
-            }
-
-            $this->accessKey = array_key_exists('accesskey', $result) ? $result['accesskey'] : $result[0];
-
-            return $this->loginWithAccessKey($username, $accessKey);
-        } catch (VtWsClientException $exception) {
-            if ($this->throwErrors) {
-                throw new VtWsClientException($exception->getMessage(), $exception->getCode());
-            } else {
-                $this->setErrors($exception->getMessage());
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets a challenge token from the server and stores for future requests
-     *
-     * @param  string  $username  VTiger user name
-     * @return bool Returns false in case of failure
-     *
-     * @throws VtWsClientException
-     */
-    private function passChallenge(string $username): bool
-    {
-        $result = $this->sendHttpRequest([
-            'operation' => 'getchallenge',
-            'username' => $username,
-        ], 'GET');
-
-        if (! is_array($result) || ! isset($result['token'])) {
-            return false;
-        }
-
-        $this->serviceExpireTime = $result['expireTime'];
-        $this->serviceToken = $result['token'];
-
-        return true;
-    }
-
-    /**
      * Sends HTTP request to VTiger web service API endpoint
      *
-     * @param  array  $data  HTTP request data
-     * @param  string  $method  HTTP request method (GET, POST etc)
+     * @param array $data HTTP request data
+     * @param string $method HTTP request method (GET, POST etc)
+     *
      * @return array Returns request result object (null in case of failure)
      *
      * @throws VtWsClientException
@@ -531,17 +363,17 @@ class Session
                 return match ($method) {
                     'GET' => $this->httpClient->get($this->endpoint, [
                         'timeout' => $this->requestTimeout,
-                        'query' => $data,
+                        'query'   => $data,
                     ]),
 
                     'POST' => $this->httpClient->post($this->endpoint, [
                         'form_params' => $data,
-                        'timeout' => $this->requestTimeout,
+                        'timeout'     => $this->requestTimeout,
                     ]),
 
                     default => throw new VtWsClientException(sprintf(
                         VtWsClientException::getVtWsExceptionError(9)->getMessage(),
-                        $method
+                        $method,
                     ), 9),
                 };
             }, $this->baseUri, $this->endpoint, $this->maximumTries);
@@ -566,11 +398,77 @@ class Session
     }
 
     /**
+     * Closure function to ensure session persistence when requires
+     *
+     * @throws VtWsClientException
+     */
+    public function sessionHandler(callable $body): array|bool
+    {
+        $sessionId = $this->getSessionId();
+
+        if (Helpers::isClosure($body)) {
+            $response = $body();
+
+            $this->logout($sessionId);
+
+            return $response;
+        }
+
+        return false;
+    }
+
+    /**
+     * Logout from the VTiger API
+     *
+     * @throws VtWsClientException
+     */
+    protected function logout(?string $sessionId = null): bool|array
+    {
+        if ($this->persistConnection) {
+            return true;
+        }
+
+        try {
+
+            // get session id
+            if (empty($sessionId)) {
+                $sessionId = isset($this->session->getSession()->auth->sessionId) ? $this->session->getSession()->auth->sessionId : null;
+            }
+
+            // if we still don't have a valid session id
+            if (empty($sessionId)) {
+                throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(14)->getMessage(), 14);
+            }
+
+            // send a request to close current connection
+            $response = $this->sendHttpRequest([
+                'sessionName' => $sessionId,
+                'operation'   => 'logout',
+            ], 'POST');
+
+            // if signout was successful
+            if (isset($response['message']) && ! empty($response['message']) && ($response['message'] === 'successful')) {
+                return true;
+            }
+
+        } catch (VtWsClientException $exception) {
+            if ($this->throwErrors) {
+                throw new VtWsClientException($exception->getMessage(), $exception->getCode());
+            } else {
+                $this->setErrors($exception->getMessage());
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check if server response contains an error, therefore the requested operation has failed
      *
      * @static
      *
-     * @param  array  $response  Server response object to check for errors
+     * @param array $response Server response object to check for errors
+     *
      * @return bool True if response object contains an error
      *
      * @throws VtWsClientException
@@ -591,22 +489,131 @@ class Session
     }
 
     /**
-     * Closure function to ensure session persistence when requires
+     * Login to the server using username and VTiger access key token
+     *
+     * @param string|null $username VTiger user name
+     * @param string|null $accessKey VTiger access key token (visible on user profile/settings page)
+     *
+     * @return bool Returns true if login operation has been successful
      *
      * @throws VtWsClientException
      */
-    public function sessionHandler(callable $body): array|bool
+    private function loginWithAccessKey(?string $username, ?string $accessKey): bool
     {
-        $sessionId = $this->getSessionId();
 
-        if (Helpers::isClosure($body)) {
-            $response = $body();
+        if (empty($username)) {
+            throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(15)->getMessage(), 15);
+        }
 
-            $this->logout($sessionId);
+        if (empty($accessKey)) {
+            throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(16)->getMessage(), 16);
+        }
 
-            return $response;
+        // Do the challenge before logging in
+        if ($this->passChallenge($username) === false) {
+            return false;
+        }
+
+        $result = $this->sendHttpRequest([
+            'operation' => 'login',
+            'username'  => $username,
+            'accessKey' => md5($this->serviceToken . $accessKey),
+        ]);
+
+        if (! is_array($result) || empty($result)) {
+            return false;
+        }
+
+        // Backup logged-in user credentials
+        $this->userName = $username;
+        $this->accessKey = $accessKey;
+
+        // Session data
+        $this->sessionName = $result['sessionName'];
+        $this->userID = $result['userId'];
+
+        // Vtiger CRM and WebServices API version
+        $this->vtigerApiVersion = $result['version'];
+        $this->vtigerVersion = $result['vtigerVersion'];
+
+        return true;
+    }
+
+    /**
+     * Allows you to login using username and password instead of access key (works on some VTige forks)
+     *
+     * @param string|null $username VTiger user name
+     * @param string|null $password VTiger password (used to access CRM using the standard login page)
+     * @param string|null $accessKey This parameter will be filled with user's VTiger access key
+     *
+     * @return bool Returns true if login operation has been successful
+     *
+     * @throws VtWsClientException
+     */
+    private function loginWithPassword(?string $username, ?string $password, ?string &$accessKey = null): bool
+    {
+        try {
+
+            if (empty($username)) {
+                throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(15)->getMessage(), 15);
+            }
+
+            if (empty($password)) {
+                throw new VtWsClientException(VtWsClientException::getVtWsExceptionError(17)->getMessage(), 17);
+            }
+
+            // Do the challenge before logging in
+            if ($this->passChallenge($username) === false) {
+                return false;
+            }
+
+            $result = $this->sendHttpRequest([
+                'operation' => 'login_pwd',
+                'username'  => $username,
+                'password'  => $password,
+            ]);
+
+            if (! is_array($result) || empty($result)) {
+                return false;
+            }
+
+            $this->accessKey = array_key_exists('accesskey', $result) ? $result['accesskey'] : $result[0];
+
+            return $this->loginWithAccessKey($username, $accessKey);
+        } catch (VtWsClientException $exception) {
+            if ($this->throwErrors) {
+                throw new VtWsClientException($exception->getMessage(), $exception->getCode());
+            } else {
+                $this->setErrors($exception->getMessage());
+            }
         }
 
         return false;
+    }
+
+    /**
+     * Gets a challenge token from the server and stores for future requests
+     *
+     * @param string $username VTiger user name
+     *
+     * @return bool Returns false in case of failure
+     *
+     * @throws VtWsClientException
+     */
+    private function passChallenge(string $username): bool
+    {
+        $result = $this->sendHttpRequest([
+            'operation' => 'getchallenge',
+            'username'  => $username,
+        ], 'GET');
+
+        if (! is_array($result) || ! isset($result['token'])) {
+            return false;
+        }
+
+        $this->serviceExpireTime = $result['expireTime'];
+        $this->serviceToken = $result['token'];
+
+        return true;
     }
 }
