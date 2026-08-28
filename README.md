@@ -77,7 +77,7 @@ Anyone is welcome to contribute to the development of this plugin. There are var
 
 ## Security
 
-If you discover any security related issues, please email oss@usipcom.com instead of using the issue tracker.
+If you discover any security related issues, please email opensource@simtabi.com instead of using the issue tracker.
 
 ## Credits
 
