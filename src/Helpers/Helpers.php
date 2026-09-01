@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Helpers;
 
 use Closure;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Respect\Validation\Validator as v;
 use Illuminate\Database\Eloquent\Collection as EC;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use Respect\Validation\Validator as v;
 
 class Helpers
 {
@@ -33,67 +33,67 @@ class Helpers
 
     public static function getCacheName(?string $name = null): string
     {
-        return Str::snake(self::CACHE_NAME . (! empty($name) ? "__{$name}" : ''));
+        return Str::snake(self::CACHE_NAME.(! empty($name) ? "__{$name}" : ''));
     }
 
     public static function getBaseUri(): ?string
     {
-        return config(self::CONFIG_KEY . '.base_uri');
+        return config(self::CONFIG_KEY.'.base_uri');
     }
 
     public static function isPersistConnection(): bool
     {
-        return (bool) config(self::CONFIG_KEY . '.persist_connection', true);
+        return (bool) config(self::CONFIG_KEY.'.persist_connection', true);
     }
 
     public static function getRequestTimeout(): int
     {
-        return (int) config(self::CONFIG_KEY . '.request_timeout', 60);
+        return (int) config(self::CONFIG_KEY.'.request_timeout', 60);
     }
 
     public static function getMaximumTries(): int
     {
-        return (int) config(self::CONFIG_KEY . '.maximum_retries', 10);
+        return (int) config(self::CONFIG_KEY.'.maximum_retries', 10);
     }
 
     public static function getCacheTtl(): int
     {
-        return (int) config(self::CONFIG_KEY . '.cache_ttl', 21600);
+        return (int) config(self::CONFIG_KEY.'.cache_ttl', 21600);
     }
 
     public static function getUsername(): ?string
     {
-        return config(self::CONFIG_KEY . '.auth.username');
+        return config(self::CONFIG_KEY.'.auth.username');
     }
 
     public static function getAccessKey(): ?string
     {
-        return config(self::CONFIG_KEY . '.auth.access_key');
+        return config(self::CONFIG_KEY.'.auth.access_key');
     }
 
     public static function getPassword(): ?string
     {
-        return config(self::CONFIG_KEY . '.auth.password');
+        return config(self::CONFIG_KEY.'.auth.password');
     }
 
     public static function isLoginWithAccessKey(): bool
     {
-        return (bool) config(self::CONFIG_KEY . '.auth.login_with_access_key', true);
+        return (bool) config(self::CONFIG_KEY.'.auth.login_with_access_key', true);
     }
 
     public static function isHttpErrors(): bool
     {
-        return (bool) config(self::CONFIG_KEY . '.http_errors', true);
+        return (bool) config(self::CONFIG_KEY.'.http_errors', true);
     }
 
     public static function isVerify(): bool
     {
-        return (bool) config(self::CONFIG_KEY . '.verify', false);
+        return (bool) config(self::CONFIG_KEY.'.verify', false);
     }
 
     public static function isThrowErrors(): bool
     {
-        return (bool) config(self::CONFIG_KEY . '.throw_errors', false);
+        return (bool) config(self::CONFIG_KEY.'.throw_errors', false);
     }
 
     public static function filterWhereNotEmpty(array|Collection|EC $data, string $column, bool $toLC = true): Collection
@@ -143,8 +143,7 @@ class Helpers
     /**
      * Checks if an array is associative or not
      *
-     * @param array $array Array to test
-     *
+     * @param  array  $array  Array to test
      * @return bool Returns true in a given array is associative and false if it's not
      */
     public static function isAssocArray(array $array): bool
@@ -183,7 +182,7 @@ class Helpers
             $baseUri .= '/';
         }
 
-        return rtrim($baseUri, '/') . '/';
+        return rtrim($baseUri, '/').'/';
     }
 
     /**

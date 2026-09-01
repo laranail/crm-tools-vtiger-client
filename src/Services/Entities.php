@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
-use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
-use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
+use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
+use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 
 /**
  * Vtiger Web Services PHP Client Session class
@@ -22,7 +22,7 @@ class Entities
     /**
      * Class constructor
      *
-     * @param VtWsClient $vtwsClient Parent VtWsClient instance
+     * @param  VtWsClient  $vtwsClient  Parent VtWsClient instance
      */
     public function __construct(VtWsClient $vtwsClient, Session $session)
     {
@@ -35,12 +35,11 @@ class Entities
      *
      * @static
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param array $params Data used to find matching entries
-     * @param array $select The list of fields to select (defaults to SQL-like '*' - all the fields)
-     * @param int $limit Limit the list of entries to N records (acts like LIMIT in SQL)
-     * @param int $offset Integer values to specify the offset of the query
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  array  $params  Data used to find matching entries
+     * @param  array  $select  The list of fields to select (defaults to SQL-like '*' - all the fields)
+     * @param  int  $limit  Limit the list of entries to N records (acts like LIMIT in SQL)
+     * @param  int  $offset  Integer values to specify the offset of the query
      * @return string The query build out of the supplied parameters
      */
     public static function getQueryString(string $moduleName, array $params, array $select = [], $limit = 0, $offset = 0): string
@@ -69,9 +68,8 @@ class Entities
     /**
      * Retrieves an entity by ID
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param string $entityID The ID of the entity to retrieve
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  string  $entityID  The ID of the entity to retrieve
      * @return array|null $select  The list of fields to select (defaults to SQL-like '*' - all the fields)
      *
      * @throws VtWsClientException
@@ -91,9 +89,8 @@ class Entities
     /**
      * Retrieve the entity matching a list of constraints
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param array $params Data used to find a matching entry
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  array  $params  Data used to find a matching entry
      * @return array|null $select  The list of fields to select (defaults to SQL-like '*' - all the fields)
      *
      * @throws VtWsClientException
@@ -108,9 +105,8 @@ class Entities
     /**
      * Retrieves the ID of the entity matching a list of constraints + prepends '<module_id>x' string to it
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param array $params Data used to find a matching entry
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  array  $params  Data used to find a matching entry
      * @return string|null Type ID (a numeric ID + '<module_id>x')
      *
      * @throws VtWsClientException
@@ -133,9 +129,8 @@ class Entities
     /**
      * Retrieve a numeric ID of the entity matching a list of constraints
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param array $params Data used to find a matching entry
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  array  $params  Data used to find a matching entry
      * @return int Numeric ID
      *
      * @throws VtWsClientException
@@ -153,9 +148,8 @@ class Entities
     /**
      * Creates an entity for the giving module
      *
-     * @param string $moduleName Name of the module / entity type for which the entry has to be created
-     * @param array $params Entity data
-     *
+     * @param  string  $moduleName  Name of the module / entity type for which the entry has to be created
+     * @param  array  $params  Entity data
      * @return array Entity creation results
      *
      * @throws VtWsClientException
@@ -177,16 +171,15 @@ class Entities
 
         return $this->vtwsClient->invokeOperation('create', [
             'elementType' => $moduleName,
-            'element'     => json_encode($params),
+            'element' => json_encode($params),
         ]);
     }
 
     /**
      * Updates an entity
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param array $params Entity data
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  array  $params  Entity data
      * @return array Entity update result
      *
      * @throws VtWsClientException
@@ -223,16 +216,15 @@ class Entities
 
         return $this->vtwsClient->invokeOperation('update', [
             'elementType' => $moduleName,
-            'element'     => json_encode($params),
+            'element' => json_encode($params),
         ]);
     }
 
     /**
      * Provides entity removal functionality
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param string $entityID The ID of the entity to delete
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  string  $entityID  The ID of the entity to delete
      * @return array Removal status object
      *
      * @throws VtWsClientException
@@ -248,9 +240,8 @@ class Entities
     /**
      * Retrieves multiple records using module name and a set of constraints
      *
-     * @param string $moduleName The name of the module / entity type
-     * @param array $params Data used to find matching entries
-     *
+     * @param  string  $moduleName  The name of the module / entity type
+     * @param  array  $params  Data used to find matching entries
      * @return array|null $select  The list of fields to select (defaults to SQL-like '*' - all the fields)
      *
      * @throws VtWsClientException
@@ -279,10 +270,9 @@ class Entities
     /**
      * Sync will return a sync result object containing details of changes after modifiedTime
      *
-     * @param int|null $modifiedTime [$modifiedTime = null]    The date of the first change
-     * @param string|null $moduleName [$moduleName = null]   The name of the module / entity type
-     * @param string|null $syncType [$syncType = null]   Sync type determines the scope of the query
-     *
+     * @param  int|null  $modifiedTime  [$modifiedTime = null]    The date of the first change
+     * @param  string|null  $moduleName  [$moduleName = null]   The name of the module / entity type
+     * @param  string|null  $syncType  [$syncType = null]   Sync type determines the scope of the query
      * @return array Sync result object
      *
      * @throws VtWsClientException

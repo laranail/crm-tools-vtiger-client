@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Helpers;
 
-use stdClass;
 use Exception;
-use Throwable;
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\InvalidArgumentException;
+use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\ResponseInterface;
 use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
+use stdClass;
+use Throwable;
 
 class ResponseHandler
 {
@@ -34,7 +34,7 @@ class ResponseHandler
                 throw new VtWsClientException(sprintf(
                     VtWsClientException::getVtWsExceptionError(6)->getMessage(),
                     $maximumRetries,
-                    '[' . $exception->getMessage() . ']',
+                    '['.$exception->getMessage().']',
                 ), 6);
             }
 

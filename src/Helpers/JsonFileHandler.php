@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Helpers;
 
+use Illuminate\Database\Eloquent\Collection as EC;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Collection as EC;
 
 class JsonFileHandler
 {
@@ -34,6 +34,6 @@ class JsonFileHandler
             self::deleteFileOrDir($fileName);
         }
 
-        return Storage::disk($storageDisk)->put($dirName . '/' . "$fileName.json", json_encode($data, JSON_PRETTY_PRINT));
+        return Storage::disk($storageDisk)->put($dirName.'/'."$fileName.json", json_encode($data, JSON_PRETTY_PRINT));
     }
 }

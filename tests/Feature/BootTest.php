@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
-use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Providers\VtWsClientServiceProvider;
+use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 
 it('boots', function (): void {
     expect(app()->getLoadedProviders())->toHaveKey(VtWsClientServiceProvider::class);
