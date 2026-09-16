@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
-use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 /**
  * Vtiger Web Services PHP Client Session class
@@ -21,7 +21,7 @@ class Modules
     /**
      * Class constructor
      *
-     * @param  VtWsClient  $vtwsClient  Parent VtWsClient instance
+     * @param VtWsClient $vtwsClient Parent VtWsClient instance
      */
     public function __construct(VtWsClient $vtwsClient, Session $session)
     {
@@ -65,7 +65,8 @@ class Modules
     /**
      * Get the type information about a given VTiger entity type.
      *
-     * @param  string  $moduleName  Name of the module / entity type
+     * @param string $moduleName Name of the module / entity type
+     *
      * @return array Result object
      *
      * @throws VtWsClientException
@@ -80,8 +81,9 @@ class Modules
     /**
      * Gets the entity ID prepended with module / entity type ID
      *
-     * @param  string  $moduleName  Name of the module / entity type
-     * @param  string  $entityID  Numeric entity ID
+     * @param string $moduleName Name of the module / entity type
+     * @param string $entityID Numeric entity ID
+     *
      * @return string Returns false if it is not possible to retrieve module / entity type ID
      *
      * @throws VtWsClientException

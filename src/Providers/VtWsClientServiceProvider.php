@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Providers;
 
-use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\Package\Tools\Package;
+use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\Package\Tools\Providers\PackageServiceProvider;
 
 /**
