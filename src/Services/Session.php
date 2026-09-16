@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
 use GuzzleHttp\Client;
+use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use GuzzleHttp\Exception\InvalidArgumentException;
-use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\ResponseHandler;
-use Simtabi\Laranail\Toolkit\Facades\Laranail;
+use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 class Session
 {
@@ -96,9 +96,9 @@ class Session
         try {
             // Initialize WebServices API requests
             $this->httpClient = new Client([
-                'base_uri' => $this->baseUri,
+                'base_uri'    => $this->baseUri,
                 'http_errors' => $this->httpErrors,
-                'verify' => $this->verify,
+                'verify'      => $this->verify,
 
             ]);
         } catch (InvalidArgumentException $e) {
@@ -266,8 +266,8 @@ class Session
     {
         return [
             'accessKey' => $this->accessKey,
-            'userName' => $this->userName,
-            'id' => $this->userID,
+            'userName'  => $this->userName,
+            'id'        => $this->userID,
         ];
     }
 
@@ -317,10 +317,10 @@ class Session
         $this->session = Laranail::cache()->remember(Helpers::getCacheName('session'), function () {
             return pheg()->transfigure()->toObject([
                 'expireTime' => $this->serviceExpireTime,
-                'token' => $this->serviceToken,
-                'auth' => [
+                'token'      => $this->serviceToken,
+                'auth'       => [
                     'sessionId' => $this->sessionName,
-                    'userId' => $this->userID,
+                    'userId'    => $this->userID,
                 ],
             ]);
         }, $this->cacheTtl);
@@ -331,8 +331,9 @@ class Session
     /**
      * Sends HTTP request to VTiger web service API endpoint
      *
-     * @param  array  $data  HTTP request data
-     * @param  string  $method  HTTP request method (GET, POST etc)
+     * @param array $data HTTP request data
+     * @param string $method HTTP request method (GET, POST etc)
+     *
      * @return array Returns request result object (null in case of failure)
      *
      * @throws VtWsClientException
@@ -362,12 +363,12 @@ class Session
                 return match ($method) {
                     'GET' => $this->httpClient->get($this->endpoint, [
                         'timeout' => $this->requestTimeout,
-                        'query' => $data,
+                        'query'   => $data,
                     ]),
 
                     'POST' => $this->httpClient->post($this->endpoint, [
                         'form_params' => $data,
-                        'timeout' => $this->requestTimeout,
+                        'timeout'     => $this->requestTimeout,
                     ]),
 
                     default => throw new VtWsClientException(sprintf(
@@ -442,7 +443,7 @@ class Session
             // send a request to close current connection
             $response = $this->sendHttpRequest([
                 'sessionName' => $sessionId,
-                'operation' => 'logout',
+                'operation'   => 'logout',
             ], 'POST');
 
             // if signout was successful
@@ -466,7 +467,8 @@ class Session
      *
      * @static
      *
-     * @param  array  $response  Server response object to check for errors
+     * @param array $response Server response object to check for errors
+     *
      * @return bool True if response object contains an error
      *
      * @throws VtWsClientException
@@ -489,8 +491,9 @@ class Session
     /**
      * Login to the server using username and VTiger access key token
      *
-     * @param  string|null  $username  VTiger user name
-     * @param  string|null  $accessKey  VTiger access key token (visible on user profile/settings page)
+     * @param string|null $username VTiger user name
+     * @param string|null $accessKey VTiger access key token (visible on user profile/settings page)
+     *
      * @return bool Returns true if login operation has been successful
      *
      * @throws VtWsClientException
@@ -513,8 +516,8 @@ class Session
 
         $result = $this->sendHttpRequest([
             'operation' => 'login',
-            'username' => $username,
-            'accessKey' => md5($this->serviceToken.$accessKey),
+            'username'  => $username,
+            'accessKey' => md5($this->serviceToken . $accessKey),
         ]);
 
         if (! is_array($result) || empty($result)) {
@@ -539,9 +542,10 @@ class Session
     /**
      * Allows you to login using username and password instead of access key (works on some VTige forks)
      *
-     * @param  string|null  $username  VTiger user name
-     * @param  string|null  $password  VTiger password (used to access CRM using the standard login page)
-     * @param  string|null  $accessKey  This parameter will be filled with user's VTiger access key
+     * @param string|null $username VTiger user name
+     * @param string|null $password VTiger password (used to access CRM using the standard login page)
+     * @param string|null $accessKey This parameter will be filled with user's VTiger access key
+     *
      * @return bool Returns true if login operation has been successful
      *
      * @throws VtWsClientException
@@ -565,8 +569,8 @@ class Session
 
             $result = $this->sendHttpRequest([
                 'operation' => 'login_pwd',
-                'username' => $username,
-                'password' => $password,
+                'username'  => $username,
+                'password'  => $password,
             ]);
 
             if (! is_array($result) || empty($result)) {
@@ -590,7 +594,8 @@ class Session
     /**
      * Gets a challenge token from the server and stores for future requests
      *
-     * @param  string  $username  VTiger user name
+     * @param string $username VTiger user name
+     *
      * @return bool Returns false in case of failure
      *
      * @throws VtWsClientException
@@ -599,7 +604,7 @@ class Session
     {
         $result = $this->sendHttpRequest([
             'operation' => 'getchallenge',
-            'username' => $username,
+            'username'  => $username,
         ], 'GET');
 
         if (! is_array($result) || ! isset($result['token'])) {

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient;
 
-use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
+use Simtabi\Laranail\CrmTools\VtigerClient\Services\Modules;
+use Simtabi\Laranail\CrmTools\VtigerClient\Services\Session;
 use Simtabi\Laranail\CrmTools\VtigerClient\Services\Entities;
 use Simtabi\Laranail\CrmTools\VtigerClient\Services\Fetchers;
-use Simtabi\Laranail\CrmTools\VtigerClient\Services\Modules;
 use Simtabi\Laranail\CrmTools\VtigerClient\Services\Operations;
-use Simtabi\Laranail\CrmTools\VtigerClient\Services\Session;
+use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 class VtWsClient
 {
@@ -51,9 +51,10 @@ class VtWsClient
     /**
      * Invokes custom operation (defined in vtiger_ws_operation table)
      *
-     * @param  string  $operation  Name of the webservice to invoke
-     * @param  array|null  $params  [$params = null] Parameter values to operation
-     * @param  string  $method  [$method = 'POST'] HTTP request method (GET, POST etc)
+     * @param string $operation Name of the webservice to invoke
+     * @param array|null $params [$params = null] Parameter values to operation
+     * @param string $method [$method = 'POST'] HTTP request method (GET, POST etc)
+     *
      * @return array Result object
      *
      * @throws VtWsClientException
@@ -83,7 +84,8 @@ class VtWsClient
      * Query always limits its output to 100 records,
      * Client application can use limit operator to get different records.
      *
-     * @param  string  $query  SQL-like expression
+     * @param string $query SQL-like expression
+     *
      * @return array Query results
      *
      * @throws VtWsClientException
@@ -127,7 +129,7 @@ class VtWsClient
     {
         return [
             'vtiger' => $this->session->getVtigerVersion(),
-            'api' => $this->session->getVtigerApiVersion(),
+            'api'    => $this->session->getVtigerApiVersion(),
         ];
     }
 
