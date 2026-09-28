@@ -1,0 +1,28 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+    # No path filter: this workflow gates merges as a required status check, and a
+    # required check that never reports (a docs-only pull request) blocks it for good.
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Calls the one shared definition in laranail/.github. Everything this file used
+# to spell out -- the PHP matrix, the composer cache and its laranail eviction,
+# prefer-lowest, fail-fast, timeouts -- lives there now, so a change to how this
+# family tests is one edit instead of fifty.
+jobs:
+  pest:
+    uses: laranail/.github/.github/workflows/tests.yml@main
+    with:
+      # Pin nothing: resolve whatever composer.json allows. The shared workflow
+      # still defaults laravel-versions to ["13.*"], which runs
+      # `composer require illuminate/contracts` and REWRITES composer.json, so
+      # the suite would test a manifest this package does not ship. Remove this
+      # line only once that default is ["*"].
+      laravel-versions: '["*"]'
+      test-command: 'vendor/bin/pest --ci --colors=never'
