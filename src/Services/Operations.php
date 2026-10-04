@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
+
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
@@ -275,12 +277,12 @@ class Operations
 
         $makeQueryString = function ($moduleName, array $conditions = [], array $select = [], $limit = 0, $offset = 0) {
             $criteria = [];
-            $select = (empty($select)) ? '*' : implode(',', $select);
-            $query = sprintf("SELECT %s FROM {$moduleName}", $select);
+            $select = (empty($select)) ? '*' : implode(',', array_map(Vtql::column(...), $select));
+            $query = sprintf('SELECT %s FROM %s', $select, Vtql::identifier($moduleName));
 
             if (! empty($conditions)) {
                 foreach ($conditions as $param => $value) {
-                    $criteria[] = "{$param} LIKE '{$value}'";
+                    $criteria[] = Vtql::identifier((string) $param) . ' LIKE ' . Vtql::literal($value);
                 }
 
                 $query .= sprintf(' WHERE %s', implode(' AND ', $criteria));
@@ -344,7 +346,7 @@ class Operations
         $column = Helpers::isValidEmail($emailOrId) ? 'email1' : 'id';
 
         return Laranail::cache()->remember(__METHOD__ . $emailOrId, function () use ($column, $emailOrId) {
-            return $this->vtWsClient->query("SELECT * FROM Accounts WHERE {$column} = '{$emailOrId}'")[0] ?? [];
+            return $this->vtWsClient->query('SELECT * FROM Accounts WHERE ' . Vtql::identifier($column) . ' = ' . Vtql::literal($emailOrId))[0] ?? [];
         }, $this->session->getCacheTtl());
     }
 
@@ -383,7 +385,7 @@ class Operations
         }
 
         return Laranail::cache()->remember(__METHOD__ . $emailOrId, function () use ($id) {
-            return $this->vtWsClient->query("SELECT * FROM Accounts WHERE account_id = '{$id}';");
+            return $this->vtWsClient->query('SELECT * FROM Accounts WHERE account_id = ' . Vtql::literal($id) . ';');
         }, $this->session->getCacheTtl());
     }
 
@@ -420,7 +422,7 @@ class Operations
             // fetch account data
             $columnType = $this->getAccountId2emailOrViceVersa($emailOrId);
             $account = Laranail::cache()->remember(__METHOD__ . $emailOrId, function () use ($columnType) {
-                return $this->vtWsClient->query("SELECT * FROM Accounts WHERE {$columnType->key} = '{$columnType->value}'")[0] ?? [];
+                return $this->vtWsClient->query('SELECT * FROM Accounts WHERE ' . Vtql::identifier($columnType->key) . ' = ' . Vtql::literal($columnType->value))[0] ?? [];
             }, $this->session->getCacheTtl());
 
             // fetch all modules related to a given account
