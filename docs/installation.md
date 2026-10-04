@@ -20,13 +20,11 @@ The package is not on Packagist. Composer ignores a dependency's own `repositori
     { "type": "vcs", "url": "https://github.com/laranail/crm-tools-vtiger-client" },
     { "type": "vcs", "url": "https://github.com/laranail/package-tools" },
     { "type": "vcs", "url": "https://github.com/laranail/toolkit" },
-    { "type": "vcs", "url": "https://github.com/laranail/console" },
-    { "type": "vcs", "url": "https://github.com/simtabi/pheg" },
-    { "type": "vcs", "url": "https://github.com/simtabi/json-objects" }
+    { "type": "vcs", "url": "https://github.com/laranail/console" }
 ]
 ```
 
-> The package requires `simtabi/pheg` at `dev-master`, a branch rather than a tagged release. An application on `minimum-stability: stable` must either lower its stability or require `simtabi/pheg:dev-master` explicitly in its own `composer.json`.
+Earlier versions also needed `simtabi/pheg` and `simtabi/json-objects`. Neither is required any more; an application that declared them only for this package can drop both entries.
 
 ## Require the package
 
@@ -67,9 +65,9 @@ php artisan vendor:publish --tag=laranail::crm-tools-vtiger-client-config
 
 The file lands at `config/laranail/crm-tools-vtiger-client.php` and is read under the `laranail.crm-tools-vtiger-client` key.
 
-## Known limitation
+## Constructing the client logs in
 
-> Constructing the client currently fails with a "Class not found" error. `Session` calls `pheg()->transfigure()`, whose constructor uses `Simtabi\Enekia\Vanilla\Validators` — a class `simtabi/pheg` relies on without requiring `simtabi/enekia`. The defect is in `simtabi/pheg`; this package's own suite skips the "resolves the client" test until it is fixed there.
+> `VtWsClient`'s constructor calls `Session::login()`, so resolving it from the container makes a request to `VTWSCLIENT_BASE_URI` straight away. Set the credentials before anything resolves the client: a failed login surfaces there, not at the first query.
 
 ---
 

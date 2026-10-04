@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
 use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\ArrayQuery;
 
 use Illuminate\Support\Collection;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
-use Simtabi\Pheg\Toolbox\Arr\Query\ArrayQuery;
-use Simtabi\Pheg\Toolbox\Arr\Query\QueryEngine;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
@@ -267,7 +266,7 @@ class Operations
      *
      * @throws VtWsClientException
      */
-    public function fetchDeepWithPagination(string $moduleName, array $conditions = [], array $select = [], bool $paginateQuery = true, int $limit = 200, int $offset = 0): bool|QueryEngine|ArrayQuery
+    public function fetchDeepWithPagination(string $moduleName, array $conditions = [], array $select = [], bool $paginateQuery = true, int $limit = 200, int $offset = 0): bool|ArrayQuery
     {
         $moduleName = Helpers::makeModuleName($moduleName);
         $prepareQueryData = function ($data): array {
@@ -335,7 +334,7 @@ class Operations
                 return $data;
             }, $this->session->getCacheTtl());
 
-            return pheg()->arr()->query($prepareQueryData($data));
+            return new ArrayQuery($prepareQueryData($data));
 
         } catch (VtWsClientException $exception) {
             throw new VtWsClientException($exception->getMessage(), $exception->getCode());

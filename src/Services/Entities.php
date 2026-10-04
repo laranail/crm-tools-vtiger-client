@@ -138,13 +138,18 @@ class Entities
      * @param string $moduleName The name of the module / entity type
      * @param array $params Data used to find a matching entry
      *
-     * @return int Numeric ID
+     * @return int Numeric ID, or -1 when no record matches or the ID has no `<module_id>x` prefix
      *
      * @throws VtWsClientException
      */
     public function getNumericID(string $moduleName, array $params): int
     {
         $entityID = $this->getID($moduleName, $params);
+
+        if ($entityID === null) {
+            return -1;
+        }
+
         $entityIDParts = explode('x', $entityID, 2);
 
         return (is_array($entityIDParts) && count($entityIDParts) === 2)

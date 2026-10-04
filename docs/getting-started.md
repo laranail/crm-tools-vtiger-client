@@ -105,7 +105,7 @@ Array
 
 `createOne()` assigns the record to the logged-in API user unless `assigned_user_id` is in the payload.
 
-> Avoid `getNumericID()` for an existence check. When no record matches it passes `null` to `explode()`, which throws a `TypeError` under the package's `strict_types`, rather than returning its documented `-1`.
+> `getNumericID()` returns `-1` when no record matches. Check for it, or use `getID()`, which returns `null`.
 
 ## Look up an existing record
 

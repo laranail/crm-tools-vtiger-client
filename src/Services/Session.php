@@ -9,6 +9,7 @@ use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use GuzzleHttp\Exception\InvalidArgumentException;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\ResponseHandler;
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\Transfigure;
 use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 class Session
@@ -315,7 +316,7 @@ class Session
 
         // Store a new session if needed, to turn it off, use a negative number or 0
         $this->session = Laranail::cache()->remember(Helpers::getCacheName('session'), function () {
-            return pheg()->transfigure()->toObject([
+            return Transfigure::toObject([
                 'expireTime' => $this->serviceExpireTime,
                 'token'      => $this->serviceToken,
                 'auth'       => [

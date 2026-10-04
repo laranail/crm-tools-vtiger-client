@@ -44,18 +44,15 @@ it('publishes under vendor-scoped tags', function (): void {
 });
 
 /**
- * Blocked upstream, not here.
+ * Not runnable offline.
  *
- * Constructing the client reaches `Session`, which calls `pheg()->transfigure()`, and
- * `Simtabi\Pheg\Toolbox\Transfigures\Transfigure::__construct()` does `new Validators()` from
- * `Simtabi\Enekia\Vanilla` -- a namespace `simtabi/pheg` uses but **does not declare**. Its
- * composer.json has no `simtabi/enekia` requirement and no `repositories` entry, so the class is
- * never installed and the constructor fatals with "Class not found".
- *
- * That is a defect in `simtabi/pheg`, which is a separate package in another org. Kept as a skip
- * rather than deleted so the gap stays visible: this is the one thing about this package still
- * unproven.
+ * This used to be blocked by `simtabi/pheg`, which `Session` called and which imports
+ * `Simtabi\Enekia\Vanilla\Validators` without requiring `simtabi/enekia`. pheg has been removed
+ * (see PhegReplacementTest). What remains is that `VtWsClient::__construct()` calls
+ * `Session::login()`, which makes a live HTTP request to the configured Vtiger instance, and the
+ * Guzzle client is built inside `Session` with no seam to fake it. Kept as a skip so the gap stays
+ * visible.
  */
 it('resolves the client', function (): void {
     expect(app(VtWsClient::class))->toBeInstanceOf(VtWsClient::class);
-})->skip('simtabi/pheg uses Simtabi\Enekia\Vanilla\Validators without declaring simtabi/enekia.');
+})->skip('VtWsClient::__construct() logs in over HTTP and Session builds its own Guzzle client.');
