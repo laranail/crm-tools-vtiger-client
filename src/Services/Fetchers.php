@@ -6,10 +6,11 @@ namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
 use Illuminate\Support\Collection;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
-use Simtabi\Pheg\Toolbox\Arr\Query\QueryEngine;
 use Illuminate\Database\Eloquent\Collection as EC;
 use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\Inflector;
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\ArrayQuery;
 
 class Fetchers
 {
@@ -128,7 +129,7 @@ class Fetchers
 
     public function fetchEntityInfoBy(string $key, string $value, string $module, string $operand = '=')
     {
-        $data = match (pheg()->str()->fromCamelCase($module)) {
+        $data = match (Inflector::fromCamelCase($module)) {
             'accounts' => $this->fetchAccounts(),
             'assets'   => $this->fetchAssets(),
             'cases'    => $this->fetchCases(),
@@ -148,11 +149,11 @@ class Fetchers
         return null;
     }
 
-    private function fetchFromCache(QueryEngine|Collection|EC|array $resource, string $cacheName): Collection
+    private function fetchFromCache(ArrayQuery|Collection|EC|array $resource, string $cacheName): Collection
     {
         if (((! $resource instanceof Collection) || (! $resource instanceof EC)) && is_array($resource)) {
             $resource = collect($resource);
-        } elseif ($resource instanceof QueryEngine) {
+        } elseif ($resource instanceof ArrayQuery) {
             $resource = $resource->toArray();
         }
 

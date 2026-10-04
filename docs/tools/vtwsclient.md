@@ -24,7 +24,7 @@
 | `findOneByID(string $moduleName, string $entityID, array $select = [])` | `?array` | A record by ID. |
 | `findMany(string $moduleName, array $params, array $select = [], int $limit = 0, int $offset = 0)` | `?array` | All matching records, or `null`. |
 | `getID(string $moduleName, array $params)` | `?string` | Typed ID (`<module_id>x<id>`) of the first match, or `null`. |
-| `getNumericID(string $moduleName, array $params)` | `int` | Numeric part of the ID. Throws a `TypeError` when nothing matches — use `getID()` instead. |
+| `getNumericID(string $moduleName, array $params)` | `int` | Numeric part of the ID, or `-1` when nothing matches. |
 | `createOne(string $moduleName, array $params)` | `array` | Create a record; assigns it to the API user unless `assigned_user_id` is set. |
 | `updateOne(string $moduleName, $entityID, array $params)` | `array` | Merge `$params` into the existing record and save it. |
 | `deleteOne(string $moduleName, string $entityID)` | `array` | Delete a record. |
