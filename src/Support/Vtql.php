@@ -18,7 +18,7 @@ use InvalidArgumentException;
  */
 final class Vtql
 {
-    private const OPERATORS = ['=', '!=', '<>', '<', '>', '<=', '>=', 'LIKE', 'NOT LIKE'];
+    private const OPERATORS = ['=', '!=', '<>', '<', '>', '<=', '>=', 'LIKE', 'NOT LIKE', 'IN'];
 
     public static function literal(mixed $value): string
     {
@@ -45,6 +45,29 @@ final class Vtql
         }
 
         return self::identifier($name);
+    }
+
+    /**
+     * The right-hand side of a comparison: a quoted literal, or for `IN` a parenthesised list of
+     * them. `IN` needs a non-empty list; any other operator needs a single value.
+     *
+     * @param mixed $value a scalar, or a list of scalars for `IN`
+     */
+    public static function value(string $operator, mixed $value): string
+    {
+        if (self::operator($operator) !== 'IN') {
+            if (is_array($value)) {
+                throw new InvalidArgumentException("Operator [{$operator}] takes one value, not a list");
+            }
+
+            return self::literal($value);
+        }
+
+        if (! is_array($value) || $value === []) {
+            throw new InvalidArgumentException('Operator [IN] takes a non-empty list of values');
+        }
+
+        return '(' . implode(', ', array_map(self::literal(...), array_values($value))) . ')';
     }
 
     public static function operator(string $operator): string

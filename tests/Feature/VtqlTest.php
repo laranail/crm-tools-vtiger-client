@@ -39,3 +39,16 @@ it('keeps count(*) usable as a select column', function (): void {
         ->and(Vtql::column('email1'))->toBe('email1');
     expect(fn () => Vtql::column('email1; DROP'))->toThrow(InvalidArgumentException::class);
 });
+
+it('builds an IN list with every value quoted', function (): void {
+    expect(Vtql::value('in', ['Hot', "O'Brien"]))->toBe("('Hot', 'O''Brien')")
+        ->and(Vtql::value('=', 'Hot'))->toBe("'Hot'");
+});
+
+it('rejects an IN without a list, and a list without IN', function (string $operator, mixed $value): void {
+    Vtql::value($operator, $value);
+})->throws(InvalidArgumentException::class)->with([
+    'IN with a scalar' => ['IN', 'Hot'],
+    'IN with an empty list' => ['IN', []],
+    '= with a list' => ['=', ['Hot']],
+]);
