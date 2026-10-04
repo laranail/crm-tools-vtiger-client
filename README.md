@@ -19,7 +19,25 @@ composer require laranail/crm-tools-vtiger-client:^0.1
 
 The service provider and the `VtWsClient` facade alias are auto-discovered.
 
-## Quick start
+## Quick start guide and usage
+
+### Getting started
+
+1. Set the connection in `.env`; the client logs in with these as soon as it is resolved:
+
+   ```dotenv
+   VTWSCLIENT_BASE_URI=https://crm.example.com
+   VTWSCLIENT_USERNAME=api-user
+   VTWSCLIENT_ACCESS_KEY=your-access-key
+   ```
+
+2. Optionally publish the config to change timeouts, retries or caching:
+
+   ```bash
+   php artisan vendor:publish --tag=laranail::crm-tools-vtiger-client-config
+   ```
+
+### Usage
 
 ```php
 use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
@@ -32,6 +50,12 @@ $lead = $client->entities->findOne('Leads', ['firstname' => 'Amina', 'lastname' 
         'lastname'  => 'Odhiambo',
         'email'     => 'amina.odhiambo@example.com',
     ]);
+```
+
+Describe a module to see which fields `findOne()` and `createOne()` accept:
+
+```php
+print_r($client->modules->getOne('Leads')); // label, permissions and every field, required or optional
 ```
 
 The full walkthrough is in [Getting started](docs/getting-started.md); everything else is in the [documentation index](#documentation).
