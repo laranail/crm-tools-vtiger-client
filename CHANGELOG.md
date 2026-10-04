@@ -43,10 +43,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `tests/Feature/DocumentedClassesExistTest.php` resolves every class named in the PHP fences of
+  `README.md` and `docs/**` (imports, `new`, static access, fully-qualified names) and every
+  backticked `Simtabi\...` name in their prose, and fails on one that does not exist. It fails on
+  the README that opened with `use Simtabi\Laranail\CrmTools\VtigerClient;`, a namespace rather
+  than a class. `docs/index.md` is exempt pending an owner decision on that page.
+
 - `existsInModule()` accepts VTQL's `IN` with a list of values, each quoted:
   `existsInModule('Leads', 'leadstatus', ['Hot', 'Warm'], 'IN')`.
 
 ### Fixed
+
+- **The README quick start logged in with the password, not the access key.** Its `.env` block
+  set `VTWSCLIENT_ACCESS_KEY` but not `VTWSCLIENT_LOGIN_WITH_ACCESS_KEY`, which reads as `false`
+  when unset. It now sets both and says why.
+
+- The README's `Install` section carries the VCS repositories block (the package, `package-tools`,
+  `toolkit` and `console`, plus the Packagist `exclude` and `packagist.org: false` lines) instead
+  of deferring to `docs/installation.md`, whose block now has the same two Packagist lines. Both
+  document the `laranail::crm-tools-vtiger-client-translations` publish tag, which the provider
+  registers and neither mentioned.
 
 - **`Entities::getNumericID()` returns `-1` when no record matches**, as its `int` return type and
   its existing `-1` fallback intended. It passed `null` to `explode()` instead, which threw a
