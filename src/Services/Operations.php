@@ -7,7 +7,6 @@ namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use Simtabi\Pheg\Toolbox\Arr\Query\ArrayQuery;
 use Simtabi\Pheg\Toolbox\Arr\Query\QueryEngine;
@@ -41,16 +40,26 @@ class Operations
      */
     public function search(QueryBuilder $query, bool $quote = true): mixed
     {
+        return $this->vtWsClient->query(self::compileSearch($query, $quote));
+    }
+
+    /**
+     * The string half of search(): the builder's SQL with its bindings filled in, the offset
+     * folded into Vtiger's `limit offset,count`, and a terminating semicolon.
+     */
+    public static function compileSearch(QueryBuilder $query, bool $quote = true): string
+    {
 
         $queryString = $query->toSQL();
         $bindings = $query->getBindings();
 
+        // Quote for VTQL, which escapes a quote by doubling it, not with the application
+        // database's PDO::quote(): MySQL's backslash escape is not honoured by VTQL, and quoting
+        // should not need a database connection at all. The callback inserts each binding
+        // verbatim; a plain replacement string would read `$1` or `\1` in it as a back-reference.
         foreach ($bindings as $binding) {
-            if ($quote) {
-                $queryString = preg_replace('/\?/', DB::connection()->getPdo()->quote($binding), $queryString, 1);
-            } else {
-                $queryString = preg_replace('/\?/', $binding, $queryString, 1);
-            }
+            $value = $quote ? Vtql::literal($binding) : (string) $binding;
+            $queryString = preg_replace_callback('/\?/', static fn (): string => $value, $queryString, 1);
         }
 
         // In the event there is an offset, append it to the front of the limit
@@ -66,7 +75,7 @@ class Operations
         // Remove the backticks and add semicolon
         $queryString = str_replace('`', '', $queryString) . ';';
 
-        return $this->vtWsClient->query($queryString);
+        return $queryString;
     }
 
     /**
