@@ -1,5 +1,7 @@
 # Contributing
 
+Where this file is silent, the [laranail contributing guide](https://github.com/laranail/.github/blob/HEAD/CONTRIBUTING.md) applies.
+
 Contributions are **welcome** and will be fully **credited**.
 
 1. Found a bug? Raise an [issue](https://github.com/laranail/crm-tools-vtiger-client/issues?direction=desc&labels=bug&page=1&sort=created&state=open) on GitHub.
