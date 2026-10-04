@@ -2,6 +2,9 @@
 
 All notable changes to `vtwsclient` will be documented in this file
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
 
 ### Changed
@@ -69,3 +72,5 @@ All notable changes to `vtwsclient` will be documented in this file
   package template, with no date and no matching tag. No `1.0.0` was ever tagged; the repository's
   first commit is `Initial release` (2022-11-20 in git history), and the only published tag is
   `v0.1.0`.
+
+[Unreleased]: https://github.com/laranail/crm-tools-vtiger-client/compare/v0.1.0...HEAD
