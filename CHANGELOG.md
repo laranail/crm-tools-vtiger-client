@@ -19,10 +19,17 @@ All notable changes to `vtwsclient` will be documented in this file
   session, array to nested `stdClass`) and `ArrayQuery` (the records returned by
   `Operations::fetchDeepWithPagination()`).
 - `Operations::fetchDeepWithPagination()` now returns `Support\ArrayQuery` instead of pheg's
-  `QueryEngine`. It implements what this package used -- `where()` with comparison operators,
-  `filter()` and `toArray()` -- and none of pheg's other query methods (`select()`, `sortBy()`,
-  `count()`, array access, iteration, ...). Code calling those on the result should call
-  `toArray()` and work on the array.
+  `QueryEngine`, with the same list-query surface: the `where()` family (`orWhere`, `whereIn`,
+  `whereNotIn`, `whereNull`, `whereNotNull`, `whereExists`, `whereStartsWith`, `whereEndsWith`,
+  `whereContains`, `whereLike`, `whereMatch`, `whereAny`, `callableWhere`), `select`, `except`,
+  `offset`, `take`, `sortBy`, `sort`, `groupBy`, `distinct`, `map`, `each`, `filter`, `get`,
+  `first`, `last`, `nth`, `column`, `implode`, the aggregates (`count`, `sum`, `min`, `max`, `avg`,
+  `exists`), array access, iteration, `count()` and JSON. Checked side by side against pheg's own
+  engine on the same records; two deliberate differences, both where pheg was broken: `get($columns)`
+  returns those columns (pheg ignored the list), and the string clauses treat a missing key as no
+  match (pheg threw a `TypeError`). Not carried over: pheg's JSON-file reading and document-path
+  methods (`from()`, `at()`, `find()`), `whereDate()`, `whereDataType()`, `whereInstance()`,
+  `whereCount()`, `then()` and `copy()`.
 
 ### Added
 
