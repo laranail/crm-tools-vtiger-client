@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
+
 use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
@@ -46,12 +48,12 @@ class Entities
     public static function getQueryString(string $moduleName, array $params, array $select = [], $limit = 0, $offset = 0): string
     {
         $criteria = [];
-        $select = (empty($select)) ? '*' : implode(',', $select);
-        $query = sprintf("SELECT %s FROM $moduleName", $select);
+        $select = (empty($select)) ? '*' : implode(',', array_map(Vtql::column(...), $select));
+        $query = sprintf('SELECT %s FROM %s', $select, Vtql::identifier($moduleName));
 
         if (! empty($params)) {
             foreach ($params as $param => $value) {
-                $criteria[] = "{$param} LIKE '{$value}'";
+                $criteria[] = Vtql::identifier((string) $param) . ' LIKE ' . Vtql::literal($value);
             }
 
             $query .= sprintf(' WHERE %s', implode(' AND ', $criteria));

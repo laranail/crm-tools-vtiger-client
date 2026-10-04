@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient;
 
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
+
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Services\Modules;
 use Simtabi\Laranail\CrmTools\VtigerClient\Services\Session;
@@ -141,7 +143,7 @@ class VtWsClient
     public function existsInModule(string $module, string $column, $value, string $operand = '='): bool
     {
         $module = Helpers::makeModuleName($module);
-        $query = $this->query("SELECT * FROM {$module} WHERE {$column} {$operand} '{$value}';");
+        $query = $this->query(sprintf('SELECT * FROM %s WHERE %s %s %s;', Vtql::identifier($module), Vtql::identifier($column), Vtql::operator($operand), Vtql::literal($value)));
 
         return ! empty($query) || (is_array($query) && (count($query) >= 1));
     }
