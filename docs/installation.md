@@ -13,18 +13,18 @@ Install `laranail/crm-tools-vtiger-client` from its VCS repositories and point i
 
 ## Add the VCS repositories
 
-The package is not on Packagist. Composer ignores a dependency's own `repositories`, so the root `composer.json` of the consuming application has to declare the package and every non-Packagist package it pulls in:
+The package is not on Packagist. Composer ignores a dependency's own `repositories`, so the root `composer.json` of the consuming application has to declare the package and every `laranail/*` package it pulls in — `package-tools` and `toolkit` directly, and `console` through `toolkit`. The last two entries stop Packagist answering for the family's names, so a stale copy there can never win over the VCS repositories:
 
 ```json
 "repositories": [
     { "type": "vcs", "url": "https://github.com/laranail/crm-tools-vtiger-client" },
     { "type": "vcs", "url": "https://github.com/laranail/package-tools" },
     { "type": "vcs", "url": "https://github.com/laranail/toolkit" },
-    { "type": "vcs", "url": "https://github.com/laranail/console" }
+    { "type": "vcs", "url": "https://github.com/laranail/console" },
+    { "type": "composer", "url": "https://repo.packagist.org", "exclude": ["laranail/*"] },
+    { "packagist.org": false }
 ]
 ```
-
-Earlier versions also needed `simtabi/pheg` and `simtabi/json-objects`. Neither is required any more; an application that declared them only for this package can drop both entries.
 
 ## Require the package
 
@@ -64,6 +64,12 @@ php artisan vendor:publish --tag=laranail::crm-tools-vtiger-client-config
 ```
 
 The file lands at `config/laranail/crm-tools-vtiger-client.php` and is read under the `laranail.crm-tools-vtiger-client` key.
+
+The translations publish separately, to `lang/vendor/laranail/crm-tools-vtiger-client`:
+
+```bash
+php artisan vendor:publish --tag=laranail::crm-tools-vtiger-client-translations
+```
 
 ## Constructing the client logs in
 

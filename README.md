@@ -3,7 +3,7 @@
 [![Tests](https://github.com/laranail/crm-tools-vtiger-client/actions/workflows/tests.yml/badge.svg)](https://github.com/laranail/crm-tools-vtiger-client/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Not published to Packagist, so there is no registry-version badge, and the repository has no static-analysis workflow, so there is no static-analysis badge: see [Install](#install).
+Two badges, not four: the package is not on Packagist (`repo.packagist.org` answers 404, checked 2026-10-04), so there is no registry-version badge, and the repository has no static-analysis workflow, so there is no static-analysis badge.
 
 > A [Vtiger](https://www.vtiger.com/) [Web Services API](https://wiki.vtiger.com/index.php/Webservices_tutorials) client for Laravel.
 
@@ -11,13 +11,26 @@ Requires PHP `^8.4.1 || ^8.5` on Laravel `^13` (`illuminate/support ^13.0`).
 
 ## Install
 
-The package resolves through VCS repositories rather than Packagist; add them to your root `composer.json` first, as described in [Installation](docs/installation.md), then:
+The package is not on Packagist. Composer ignores a dependency's own `repositories`, so add the package and its whole `laranail/*` closure to your root `composer.json`, and keep Packagist from answering for the family's names:
+
+```json
+"repositories": [
+    { "type": "vcs", "url": "https://github.com/laranail/crm-tools-vtiger-client" },
+    { "type": "vcs", "url": "https://github.com/laranail/package-tools" },
+    { "type": "vcs", "url": "https://github.com/laranail/toolkit" },
+    { "type": "vcs", "url": "https://github.com/laranail/console" },
+    { "type": "composer", "url": "https://repo.packagist.org", "exclude": ["laranail/*"] },
+    { "packagist.org": false }
+]
+```
+
+Then require it:
 
 ```bash
 composer require laranail/crm-tools-vtiger-client:^0.1
 ```
 
-The service provider and the `VtWsClient` facade alias are auto-discovered.
+The service provider and the `VtWsClient` facade alias are auto-discovered. More in [Installation](docs/installation.md).
 
 ## Quick start guide and usage
 
@@ -29,13 +42,19 @@ The service provider and the `VtWsClient` facade alias are auto-discovered.
    VTWSCLIENT_BASE_URI=https://crm.example.com
    VTWSCLIENT_USERNAME=api-user
    VTWSCLIENT_ACCESS_KEY=your-access-key
+   VTWSCLIENT_LOGIN_WITH_ACCESS_KEY=true
    ```
 
-2. Optionally publish the config to change timeouts, retries or caching:
+   Set `VTWSCLIENT_LOGIN_WITH_ACCESS_KEY` explicitly: unset, it reads as `false` and the client logs in with `VTWSCLIENT_PASSWORD` instead of the access key. The other `VTWSCLIENT_*` keys (timeouts, retries, cache TTL, TLS verification, error throwing) are listed in [Configuration](docs/configuration.md).
+
+2. Optionally publish the config, or the translations:
 
    ```bash
    php artisan vendor:publish --tag=laranail::crm-tools-vtiger-client-config
+   php artisan vendor:publish --tag=laranail::crm-tools-vtiger-client-translations
    ```
+
+   The config lands at `config/laranail/crm-tools-vtiger-client.php` and is read under `laranail.crm-tools-vtiger-client`. There are no migrations or views.
 
 ### Usage
 
