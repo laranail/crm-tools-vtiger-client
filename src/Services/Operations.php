@@ -41,6 +41,15 @@ class Operations
      */
     public function search(QueryBuilder $query, bool $quote = true): mixed
     {
+        return $this->vtWsClient->query(self::compileSearch($query, $quote));
+    }
+
+    /**
+     * The string half of search(): the builder's SQL with its bindings filled in, the offset
+     * folded into Vtiger's `limit offset,count`, and a terminating semicolon.
+     */
+    public static function compileSearch(QueryBuilder $query, bool $quote = true): string
+    {
 
         $queryString = $query->toSQL();
         $bindings = $query->getBindings();
@@ -66,7 +75,7 @@ class Operations
         // Remove the backticks and add semicolon
         $queryString = str_replace('`', '', $queryString) . ';';
 
-        return $this->vtWsClient->query($queryString);
+        return $queryString;
     }
 
     /**
