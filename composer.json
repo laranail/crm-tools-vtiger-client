@@ -23,7 +23,7 @@
         "guzzlehttp/guzzle": "^7.8 || ^8.0",
         "illuminate/support": "^13.0",
         "laranail/package-tools": "^0.1",
-        "laranail/toolkit": "^0.1"
+        "laranail/toolkit": "^0.2"
     },
     "require-dev": {
         "laravel/pint": "^1.18",

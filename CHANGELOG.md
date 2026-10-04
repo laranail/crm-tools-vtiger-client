@@ -4,6 +4,13 @@ All notable changes to `vtwsclient` will be documented in this file
 
 ## [Unreleased]
 
+### Changed
+
+- **Requires `laranail/toolkit ^0.2`** (was `^0.1`). Under 0.x, `^0.1` stops below `0.2.0`, so
+  this package kept resolving toolkit `v0.1.0` and never received 0.2's fixes. 0.2's breaking
+  changes are three renamed collection macros (`chunkBy`, `firstOrFail`, `before`); this package
+  calls none of them.
+
 ### Removed
 
 - **`simtabi/pheg` is no longer a dependency**, and neither is its `vcs` repository entry. pheg
