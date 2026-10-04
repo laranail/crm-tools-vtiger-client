@@ -143,7 +143,7 @@ class VtWsClient
     public function existsInModule(string $module, string $column, $value, string $operand = '='): bool
     {
         $module = Helpers::makeModuleName($module);
-        $query = $this->query(sprintf('SELECT * FROM %s WHERE %s %s %s;', Vtql::identifier($module), Vtql::identifier($column), Vtql::operator($operand), Vtql::literal($value)));
+        $query = $this->query(sprintf('SELECT * FROM %s WHERE %s %s %s;', Vtql::identifier($module), Vtql::identifier($column), Vtql::operator($operand), Vtql::value($operand, $value)));
 
         return ! empty($query) || (is_array($query) && (count($query) >= 1));
     }

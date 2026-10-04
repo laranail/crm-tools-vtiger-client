@@ -24,11 +24,23 @@ All notable changes to `vtwsclient` will be documented in this file
   `count()`, array access, iteration, ...). Code calling those on the result should call
   `toArray()` and work on the array.
 
+### Added
+
+- `existsInModule()` accepts VTQL's `IN` with a list of values, each quoted:
+  `existsInModule('Leads', 'leadstatus', ['Hot', 'Warm'], 'IN')`.
+
 ### Fixed
 
 - **`Entities::getNumericID()` returns `-1` when no record matches**, as its `int` return type and
   its existing `-1` fallback intended. It passed `null` to `explode()` instead, which threw a
   `TypeError` under `strict_types`.
+
+- **`Operations::search()` quotes bindings for VTQL, not with the application database.** It filled
+  `?` bindings with `DB::connection()->getPdo()->quote()`: MySQL's quoter escapes a quote with a
+  backslash, which VTQL does not honour, so a crafted value could leave the literal; it also needed a
+  working database connection to build a CRM query, and a binding containing `$1` or `\1` was read
+  as a regex back-reference. Bindings are now quoted with `Vtql::literal()` and inserted verbatim.
+  The string-building half is `Operations::compileSearch()`, which `search()` delegates to.
 
 - **VTQL queries no longer interpolate caller values raw.** Every builder put values straight
   between single quotes, so a value containing a quote ended the literal and the rest became
