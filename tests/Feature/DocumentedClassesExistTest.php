@@ -14,10 +14,8 @@ declare(strict_types=1);
  * Exempt, with a reason each. A stale entry (a file that no longer exists) fails.
  */
 const DOCUMENTED_CLASSES_EXEMPT = [
-    // Legacy long-form examples awaiting an owner decision on whether the page is kept, relocated or
-    // retired. Measured 2026-10-04: its one `use` imports the namespace `Simtabi\Laranail\CrmTools\VtigerClient`,
-    // which is not a class. Remove this entry once that page is decided.
-    'docs/index.md',
+    // Empty since 2026-10-04: the legacy docs/index.md it exempted was retired, its content having
+    // moved to getting-started and recipes/.
 ];
 
 /** @return list<string> repository-relative markdown files to scan */
@@ -100,8 +98,8 @@ function documentedNameExists(string $name): bool
 it('keeps every exemption pointing at a real file', function (): void {
     $root = dirname(__DIR__, 2);
 
-    // A ceiling, not a licence: adding a second exemption is a decision, not a fix.
-    expect(count(DOCUMENTED_CLASSES_EXEMPT))->toBeLessThanOrEqual(1);
+    // A ceiling, not a licence: adding an exemption is a decision, not a fix.
+    expect(count(DOCUMENTED_CLASSES_EXEMPT))->toBeLessThanOrEqual(0);
 
     foreach (DOCUMENTED_CLASSES_EXEMPT as $exempt) {
         expect(is_file($root . '/' . $exempt))->toBeTrue("Stale exemption: {$exempt} no longer exists");

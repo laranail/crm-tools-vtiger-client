@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **The legacy `docs/index.md` page** (2022 long-form examples). Every section had already moved:
+  module description, create-if-missing and look-up to `getting-started.md`, own operations to
+  `recipes/custom-operations.md`, related items to `recipes/related-records.md`, and sync to
+  `recipes/sync-changes.md`. All 20 identifiers it named appear in the current pages. Its
+  exemption in `DocumentedClassesExistTest` is gone with it, and the exemption ceiling is now 0.
+
 - **`simtabi/pheg` is no longer a dependency**, and neither is its `vcs` repository entry. pheg
   is archived, and it imports `Simtabi\Enekia\...` without requiring `simtabi/enekia`, so on a
   fresh install `VtWsClient` could not be constructed at all: `Session::login()` reached pheg's
