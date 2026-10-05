@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `illuminate/database` is now declared in `require` at `^13.0`. `src/` imports it, and it was only arriving transitively.
 - **Formatting is a CI gate.** A `Static analysis` workflow runs `vendor/bin/laranail-pint --test`
   against the shared laranail config on every pull request; nothing checked it before. The seven
   files that failed it on `main` are formatted (no behaviour change; the suite is unchanged).
