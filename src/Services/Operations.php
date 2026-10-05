@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
-use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
-use Simtabi\Laranail\CrmTools\VtigerClient\Support\ArrayQuery;
-
 use Illuminate\Support\Collection;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\ArrayQuery;
 use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 class Operations
@@ -29,17 +28,6 @@ class Operations
     {
         $this->vtWsClient = $vtWsClient;
         $this->session = $session;
-    }
-
-    /**
-     * This function is a sql query builder wrapped around the query function.
-     * Accepts instance of Laravels' QueryBuilder.
-     *
-     * @throws VtWsClientException
-     */
-    public function search(QueryBuilder $query, bool $quote = true): mixed
-    {
-        return $this->vtWsClient->query(self::compileSearch($query, $quote));
     }
 
     /**
@@ -75,6 +63,17 @@ class Operations
         $queryString = str_replace('`', '', $queryString) . ';';
 
         return $queryString;
+    }
+
+    /**
+     * This function is a sql query builder wrapped around the query function.
+     * Accepts instance of Laravels' QueryBuilder.
+     *
+     * @throws VtWsClientException
+     */
+    public function search(QueryBuilder $query, bool $quote = true): mixed
+    {
+        return $this->vtWsClient->query(self::compileSearch($query, $quote));
     }
 
     /**

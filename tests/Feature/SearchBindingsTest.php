@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Illuminate\Database\MySqlConnection;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\MySqlConnection;
 use Illuminate\Database\Query\Grammars\MySqlGrammar;
 use Illuminate\Database\Query\Processors\MySqlProcessor;
 use Simtabi\Laranail\CrmTools\VtigerClient\Services\Operations;
@@ -18,7 +18,7 @@ function vtql_builder(): Builder
 {
     $connection = new MySqlConnection(static fn () => throw new LogicException('no PDO needed'));
 
-    return new Builder($connection, new MySqlGrammar($connection), new MySqlProcessor());
+    return new Builder($connection, new MySqlGrammar($connection), new MySqlProcessor);
 }
 
 it('quotes bindings the way VTQL escapes them, without a database connection', function (): void {
@@ -54,7 +54,7 @@ it('leaves bindings unquoted only when asked', function (): void {
 it('does not open the application database to quote a CRM query', function (): void {
     // A MySQL default connection nobody can reach: the old path called DB::connection()->getPdo().
     config([
-        'database.default' => 'vtql-unreachable',
+        'database.default'                      => 'vtql-unreachable',
         'database.connections.vtql-unreachable' => ['driver' => 'mysql', 'host' => '127.0.0.1', 'port' => 1, 'database' => 'x', 'username' => 'x', 'password' => ''],
     ]);
 

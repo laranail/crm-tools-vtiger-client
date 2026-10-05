@@ -8,8 +8,8 @@ use GuzzleHttp\Client;
 use Simtabi\Laranail\Toolkit\Facades\Laranail;
 use GuzzleHttp\Exception\InvalidArgumentException;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
-use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\ResponseHandler;
 use Simtabi\Laranail\CrmTools\VtigerClient\Support\Transfigure;
+use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\ResponseHandler;
 use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
 class Session

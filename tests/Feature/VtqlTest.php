@@ -48,7 +48,7 @@ it('builds an IN list with every value quoted', function (): void {
 it('rejects an IN without a list, and a list without IN', function (string $operator, mixed $value): void {
     Vtql::value($operator, $value);
 })->throws(InvalidArgumentException::class)->with([
-    'IN with a scalar' => ['IN', 'Hot'],
+    'IN with a scalar'      => ['IN', 'Hot'],
     'IN with an empty list' => ['IN', []],
-    '= with a list' => ['=', ['Hot']],
+    '= with a list'         => ['=', ['Hot']],
 ]);
