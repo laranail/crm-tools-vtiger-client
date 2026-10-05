@@ -85,6 +85,21 @@ final class ArrayQuery implements ArrayAccess, Countable, IteratorAggregate, Jso
      */
     public function __construct(private array $records = []) {}
 
+    public function __get(string $key): mixed
+    {
+        return $this->offsetGet($key);
+    }
+
+    public function __isset(string $key): bool
+    {
+        return $this->offsetExists($key);
+    }
+
+    public function __toString(): string
+    {
+        return $this->toJson();
+    }
+
     // ---- clauses (lazy) -------------------------------------------------------------------
 
     public function where(string $key, mixed $operator = null, mixed $value = null): self
@@ -526,78 +541,6 @@ final class ArrayQuery implements ArrayAccess, Countable, IteratorAggregate, Jso
         unset($this->records[$offset]);
     }
 
-    public function __get(string $key): mixed
-    {
-        return $this->offsetGet($key);
-    }
-
-    public function __isset(string $key): bool
-    {
-        return $this->offsetExists($key);
-    }
-
-    public function __toString(): string
-    {
-        return $this->toJson();
-    }
-
-    // ---- internals -----------------------------------------------------------------------
-
-    /**
-     * The records after pending clauses, then offset/take, then select/except.
-     *
-     * @return array<array-key, mixed>
-     */
-    private function records(): array
-    {
-        $this->apply();
-        $records = $this->records;
-
-        if ($this->offset > 0 || $this->take !== null) {
-            $records = array_values(array_slice($records, $this->offset, $this->take)); // re-indexed, as pheg did
-        }
-
-        if ($this->select === [] && $this->except === []) {
-            return $records;
-        }
-
-        return array_map(function (mixed $record): mixed {
-            if (! is_array($record)) {
-                return $record;
-            }
-
-            if ($this->select !== []) {
-                $picked = [];
-
-                foreach ($this->select as $column) {
-                    $picked[$column] = self::read($record, $column);
-                }
-
-                $record = $picked;
-            }
-
-            return array_diff_key($record, array_flip($this->except));
-        }, $records);
-    }
-
-    /**
-     * @return list<int|float>
-     */
-    private function values(?string $column): array
-    {
-        $values = [];
-
-        foreach ($this->records() as $record) {
-            $value = $column === null ? $record : self::read($record, $column);
-
-            if (is_int($value) || is_float($value) || (is_string($value) && is_numeric($value))) {
-                $values[] = $value + 0;
-            }
-        }
-
-        return $values;
-    }
-
     /**
      * @return array{0: callable(mixed): bool}
      */
@@ -615,41 +558,6 @@ final class ArrayQuery implements ArrayAccess, Countable, IteratorAggregate, Jso
         $operator = self::OPERATORS[$operator];
 
         return [static fn (mixed $record): bool => self::compare(self::read($record, $key), $operator, $value)];
-    }
-
-    /**
-     * @param callable(mixed): bool $condition
-     */
-    private function addCondition(bool $startsGroup, callable $condition): self
-    {
-        if ($startsGroup || $this->groups === []) {
-            $this->groups[] = [];
-        }
-
-        $this->groups[array_key_last($this->groups)][] = $condition;
-
-        return $this;
-    }
-
-    private function apply(): void
-    {
-        if ($this->groups === []) {
-            return;
-        }
-
-        $kept = [];
-
-        foreach ($this->records as $index => $record) {
-            foreach ($this->groups as $group) {
-                if (self::passesAll($record, $group)) {
-                    $kept[$index] = $record;
-                    break;
-                }
-            }
-        }
-
-        $this->records = $kept;
-        $this->groups = [];
     }
 
     /**
@@ -743,15 +651,107 @@ final class ArrayQuery implements ArrayAccess, Countable, IteratorAggregate, Jso
     private static function compare(mixed $actual, string $operator, mixed $expected): bool
     {
         return match ($operator) {
-            '='   => $actual == $expected,
-            '=='  => $actual === $expected,
-            '!='  => $actual != $expected,
-            '!==' => $actual !== $expected,
-            '>'   => $actual > $expected,
-            '<'   => $actual < $expected,
-            '>='  => $actual >= $expected,
-            '<='  => $actual <= $expected,
+            '='     => $actual == $expected,
+            '=='    => $actual === $expected,
+            '!='    => $actual != $expected,
+            '!=='   => $actual !== $expected,
+            '>'     => $actual > $expected,
+            '<'     => $actual < $expected,
+            '>='    => $actual >= $expected,
+            '<='    => $actual <= $expected,
             default => throw new InvalidArgumentException("Condition [{$operator}] is not supported."),
         };
+    }
+
+    // ---- internals -----------------------------------------------------------------------
+
+    /**
+     * The records after pending clauses, then offset/take, then select/except.
+     *
+     * @return array<array-key, mixed>
+     */
+    private function records(): array
+    {
+        $this->apply();
+        $records = $this->records;
+
+        if ($this->offset > 0 || $this->take !== null) {
+            $records = array_values(array_slice($records, $this->offset, $this->take)); // re-indexed, as pheg did
+        }
+
+        if ($this->select === [] && $this->except === []) {
+            return $records;
+        }
+
+        return array_map(function (mixed $record): mixed {
+            if (! is_array($record)) {
+                return $record;
+            }
+
+            if ($this->select !== []) {
+                $picked = [];
+
+                foreach ($this->select as $column) {
+                    $picked[$column] = self::read($record, $column);
+                }
+
+                $record = $picked;
+            }
+
+            return array_diff_key($record, array_flip($this->except));
+        }, $records);
+    }
+
+    /**
+     * @return list<int|float>
+     */
+    private function values(?string $column): array
+    {
+        $values = [];
+
+        foreach ($this->records() as $record) {
+            $value = $column === null ? $record : self::read($record, $column);
+
+            if (is_int($value) || is_float($value) || (is_string($value) && is_numeric($value))) {
+                $values[] = $value + 0;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param callable(mixed): bool $condition
+     */
+    private function addCondition(bool $startsGroup, callable $condition): self
+    {
+        if ($startsGroup || $this->groups === []) {
+            $this->groups[] = [];
+        }
+
+        $this->groups[array_key_last($this->groups)][] = $condition;
+
+        return $this;
+    }
+
+    private function apply(): void
+    {
+        if ($this->groups === []) {
+            return;
+        }
+
+        $kept = [];
+
+        foreach ($this->records as $index => $record) {
+            foreach ($this->groups as $group) {
+                if (self::passesAll($record, $group)) {
+                    $kept[$index] = $record;
+                    break;
+                }
+            }
+        }
+
+        $this->records = $kept;
+        $this->groups = [];
     }
 }

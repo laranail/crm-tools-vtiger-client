@@ -9,26 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Formatting is a CI gate.** A `Static analysis` workflow runs `vendor/bin/laranail-pint --test`
+  against the shared laranail config on every pull request; nothing checked it before. The seven
+  files that failed it on `main` are formatted (no behaviour change; the suite is unchanged).
+
 - **Requires `laranail/toolkit ^0.2`** (was `^0.1`). Under 0.x, `^0.1` stops below `0.2.0`, so
   this package kept resolving toolkit `v0.1.0` and never received 0.2's fixes. 0.2's breaking
   changes are three renamed collection macros (`chunkBy`, `firstOrFail`, `before`); this package
   calls none of them.
-
-### Removed
-
-- **The legacy `docs/index.md` page** (2022 long-form examples). Every section had already moved:
-  module description, create-if-missing and look-up to `getting-started.md`, own operations to
-  `recipes/custom-operations.md`, related items to `recipes/related-records.md`, and sync to
-  `recipes/sync-changes.md`. All 20 identifiers it named appear in the current pages. Its
-  exemption in `DocumentedClassesExistTest` is gone with it, and the exemption ceiling is now 0.
-
-- **`simtabi/pheg` is no longer a dependency**, and neither is its `vcs` repository entry. pheg
-  is archived, and it imports `Simtabi\Enekia\...` without requiring `simtabi/enekia`, so on a
-  fresh install `VtWsClient` could not be constructed at all: `Session::login()` reached pheg's
-  `Transfigure`, whose constructor failed with "Class not found". Applications that declared
-  `simtabi/pheg` or `simtabi/json-objects` only for this package can drop both.
-
-### Changed
 
 - The three pheg calls are replaced by in-package code under `Support\`, with the same results:
   `Inflector::fromCamelCase()` (module name to fetcher key), `Transfigure::toObject()` (the cached
@@ -46,6 +34,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   match (pheg threw a `TypeError`). Not carried over: pheg's JSON-file reading and document-path
   methods (`from()`, `at()`, `find()`), `whereDate()`, `whereDataType()`, `whereInstance()`,
   `whereCount()`, `then()` and `copy()`.
+
+### Removed
+
+- **The legacy `docs/index.md` page** (2022 long-form examples). Every section had already moved:
+  module description, create-if-missing and look-up to `getting-started.md`, own operations to
+  `recipes/custom-operations.md`, related items to `recipes/related-records.md`, and sync to
+  `recipes/sync-changes.md`. All 20 identifiers it named appear in the current pages. Its
+  exemption in `DocumentedClassesExistTest` is gone with it, and the exemption ceiling is now 0.
+
+- **`simtabi/pheg` is no longer a dependency**, and neither is its `vcs` repository entry. pheg
+  is archived, and it imports `Simtabi\Enekia\...` without requiring `simtabi/enekia`, so on a
+  fresh install `VtWsClient` could not be constructed at all: `Session::login()` reached pheg's
+  `Transfigure`, whose constructor failed with "Class not found". Applications that declared
+  `simtabi/pheg` or `simtabi/json-objects` only for this package can drop both.
 
 ### Added
 

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Simtabi\Laranail\CrmTools\VtigerClient\Services;
 
-use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
-
 use Simtabi\Laranail\CrmTools\VtigerClient\VtWsClient;
+use Simtabi\Laranail\CrmTools\VtigerClient\Support\Vtql;
 use Simtabi\Laranail\CrmTools\VtigerClient\Helpers\Helpers;
 use Simtabi\Laranail\CrmTools\VtigerClient\Exceptions\VtWsClientException;
 
