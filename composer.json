@@ -24,7 +24,7 @@
         "illuminate/database": "^13.0",
         "illuminate/support": "^13.0",
         "laranail/package-tools": "^0.1",
-        "laranail/toolkit": "^0.2"
+        "laranail/toolkit": "^0.2 || ^0.3"
     },
     "require-dev": {
         "laravel/pint": "^1.18",
