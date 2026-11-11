@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `laranail/toolkit` is required at `^0.1`: toolkit restarted its versions at 0.1.0 and withdrew the 0.2 and 0.3 tags.
 - A guard now keeps literal credentials out of the tests, and every credential the tests generate is named with a single-word purpose, so secret scanning has nothing to report. `laranail/package-tools` in `require` is now `^0.1.10`, the first release with the purpose check.
 - `illuminate/database` is now declared in `require` at `^13.0`. `src/` imports it, and it was only arriving transitively.
 - **Formatting is a CI gate.** A `Static analysis` workflow runs `vendor/bin/laranail-pint --test`
